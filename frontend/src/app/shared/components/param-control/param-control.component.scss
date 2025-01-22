@@ -1,0 +1,59 @@
+@import "../../../../assets/styles/colors";
+@import "../../../../assets/styles/mixins";
+
+
+
+.param-control-component {
+    font-size: 18px;
+
+    .btn-spinbox-block {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: $color-4;
+        border-radius: 5px;
+        height: 46px;
+        box-sizing: border-box;
+
+        .spinbox-info {
+            // width: 125px;
+            // padding-left: 10px;
+            padding: 3px 10px;
+        }
+
+        .spinbox-btns {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+
+            .btn-one-click {
+                border-radius: 0;
+                width: 30px;
+                height: 23px;
+                background-color: $color-4;
+
+                &:first-child {
+                    border-top-right-radius: 5px;
+                }
+                &:last-child {
+                    border-bottom-right-radius: 5px;
+                }
+
+                // почему не работают глобальные стили hover и active ???
+                &:hover {
+                    background-color: $color-3;        
+                    svg path {
+                        fill: $color-F;
+                    }
+                }
+                &:active { // pressed
+                    @include btn-pressed;
+                    svg path {
+                        fill: $color-F;
+                    }
+                }
+            }
+        }
+    }
+}

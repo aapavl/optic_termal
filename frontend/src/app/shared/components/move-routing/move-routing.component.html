@@ -1,0 +1,18 @@
+<div class="move-routing-component">
+
+    <div class="block-inputs">
+        <input-map-component 
+            *ngFor="let route of routes; let i = index" 
+            [route]="route"
+            (valueChange)="onValueInput($event, i)"
+            (clickDelete)="onClickDelete($event)"
+        >
+        </input-map-component>
+    </div>
+
+    <div class="block-btns">
+        <div class="btn-main" (click)="addRoute()">+</div>
+        <div class="btn-main" (click)="mapRoute()">Запустить</div>
+    </div>
+
+</div>

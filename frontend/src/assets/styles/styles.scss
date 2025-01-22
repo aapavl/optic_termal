@@ -1,0 +1,114 @@
+@import "colors";
+// @import "fonts";
+// @import "global";
+
+// @import "mixins";
+@import "btns";
+
+
+
+html, body {
+    margin: 0;
+    padding: 0;
+
+    font-family: 'Montserrat-Reg', sans-serif;
+    font-size: 18px;
+}
+
+
+
+li {
+    list-style: none;
+
+    a {
+        text-decoration: none;       
+        cursor: pointer;
+    }
+}
+
+
+
+.display-none {
+    display: none !important;
+}
+  
+
+.content {
+    padding: 30px;
+}
+
+
+
+// --- HEADERS -----
+.title-1 {
+    font-family: 'Merriweather-Bold';
+    color: $grey-1;
+    font-size: 32px;
+}
+
+.title-2 {
+    font-family: 'Merriweather-Bold';
+    color: $grey-1;
+    font-size: 28px;
+}
+
+.title-3 {
+    font-family: 'Merriweather-Bold';
+    color: $grey-1;
+    font-size: 24px;
+}
+
+
+
+// --- BUTTONS -----
+@mixin btn-common {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 30px;
+    cursor: pointer;
+  
+    height: 45px;
+    padding: 0 30px;
+    box-sizing: border-box;
+}
+
+@mixin btn-main {
+    border: 1px solid transparent;
+    background-color: $arrow-3;
+    color: white;
+}
+
+@mixin btn-second {
+    border: 1px solid $arrow-3;
+    background-color: transparent;
+    color: $arrow-3;
+}
+
+.btn-main {
+    @include btn-common;
+    @include btn-main;
+}
+
+.btn-second {
+    @include btn-common;
+    @include btn-second;    
+
+    &:hover {
+        @include btn-main;
+    }
+}
+// -----------------
+
+
+
+.stream-img {
+    display: block; /* Убирает лишние отступы вокруг изображения */
+    margin: 0 auto; /* Центрирует изображение */
+
+    height: auto; /* Высота изменяется пропорционально */
+    width: auto; /* Изображение растягивается на всю ширину родительского контейнера */
+    max-height: 100%;
+    max-width: 100%; /* Предотвращает выход за границы контейнера */
+    object-fit: cover; /* Чтобы изображение не искажалось */
+}

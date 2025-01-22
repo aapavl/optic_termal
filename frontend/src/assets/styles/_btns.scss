@@ -1,0 +1,105 @@
+@import "colors";
+@import "mixins";
+
+// возможно проблема с отображением фокуса при геймпаде. возможно границу стоит заменить  на что то другое (outline, тень и прочее)
+
+
+
+// ----------------------------------------
+// квадратная кнопка с иконкой (active, pressed, focus) param-control
+.btn-swapper {
+    @include btn-default;
+
+    background-color: $color-btn-control; 
+    width: 46px;
+    height: 46px;
+
+    padding: 0;
+    margin: 0;
+
+    img {
+        width: 75%;
+        height: 75%;
+    }
+
+    &:hover {
+        @include btn-hover;
+    }
+    &:active { // pressed
+        @include btn-pressed;
+    }
+    // &:focus {
+    //     outline: none;
+    // }
+
+}
+
+
+
+// ----------------------------------------
+// плашка с инфой и кнопками spinbox (focus) param-control
+.btn-one-click {
+    @include btn-default;
+    background-color: $color-btn-control; 
+
+    &:hover {
+        @include btn-hover;
+    }
+    &:active { // pressed
+        @include btn-pressed;
+    }
+}
+
+
+
+
+// ----------------------------------------
+// кнопки управления (живут отдельно) move-block
+.btn-move {
+    @include btn-default;
+    background-color: $color-btn-control;
+    width: 45px;
+    height: 45px;
+  
+    svg {
+        height: 35px;
+        width: 35px;
+        path {
+            fill: grey;
+        }  
+    }
+  
+    &:hover {
+        @include btn-hover;
+        svg path {
+            fill: black;
+        }
+    }
+    &:active, &.active {
+        @include btn-pressed;               
+        svg path {
+            fill: white;
+        }
+    } 
+}
+
+
+
+
+// ----------------------------------------
+// состояния 
+.btn-active {
+    @include btn-pressed;
+}
+
+.btn-focus {
+    border-color: red;
+    outline: 1px solid green;
+}
+
+
+.focus {
+    outline: none; /* Optional: remove focus outline if not needed */
+    border: 3px solid $arrow-3; /* Example: Add a blue border */
+}
+

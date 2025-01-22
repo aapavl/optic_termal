@@ -1,0 +1,31 @@
+<div class="page-files"> 
+
+    <div class="block-params">
+        <div class="block">
+            <param-control-component 
+                class="focusElement" tabindex="0" 
+                [params]="nnParam"
+                (activeChange)="nnParam.active"
+                (click)="onNN()"
+            >
+            </param-control-component>
+        </div>
+
+        <div class="block-load">
+            <input 
+                type="file" 
+                class="file-input" 
+                style="display: none;" 
+                (change)="onFileSelected($event)" 
+                #btnFileLoad
+            >
+            <div class="btn-main" (click)="btnFileLoad.click()">Загрузить данные</div>
+            <div class="file-name">{{file || ""}}</div>
+        </div>
+    </div>
+
+    <div class="block-view" >
+        <img *ngIf="imgSrc" [src]="imgSrc" alt="Loaded File" class="stream-img" />
+        <div *ngIf="!imgSrc">Выберите файл, который хотите загрузить...</div>
+    </div>
+</div>

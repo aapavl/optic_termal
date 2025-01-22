@@ -1,0 +1,16 @@
+.input-map-component {
+    display: flex;
+    gap: 5px;
+    justify-content: space-between;
+    max-width: 250px;
+
+    .combobox {
+        max-width: 125px;
+        display: flex;
+        flex-grow: 1;
+    }
+
+    input {
+        width: 75px;
+    }
+}

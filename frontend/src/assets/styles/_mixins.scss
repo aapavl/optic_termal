@@ -1,0 +1,73 @@
+@import "colors";
+
+
+
+// @mixin flex-center {
+//     display: flex;
+//     justify-content: center;
+//     align-items: center;
+// }
+
+// @mixin flex-space-between {
+//     display: flex;
+//     justify-content: space-between;
+//     align-items: center;
+// }
+
+
+
+@mixin head-lora-36 {
+  font-family: 'Lora', sans-serif;
+  font-weight: 400;
+  font-size: 36px;
+  line-height: 130%;
+  color: #000000;
+}
+
+
+// @mixin btn-std {
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   border-radius: 30px;
+//   cursor: pointer;
+
+//   height: 45px;
+//   padding: 0 30px;
+//   box-sizing: border-box;
+//   border: none;
+//   background-color: $arrow-3;
+//   color: white;
+// }
+
+
+@mixin btn-default {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 3px solid transparent;
+  border-radius: 5px;
+
+  margin: 0;
+  padding: 5px;   
+  box-sizing: border-box;
+
+  cursor: pointer;
+}
+
+@mixin btn-hover {
+  background-color: $color-btn-control-hover;
+  border-color: transparent;
+  color: $color-0;
+}
+
+@mixin btn-pressed {
+  background-color: $color-btn-control-pressed;
+  border-color: transparent;
+  color: $color-F;
+}
+// @mixin btn-active {
+//   background-color: $color-btn-control-pressed;
+//   color: $color-6;
+// }

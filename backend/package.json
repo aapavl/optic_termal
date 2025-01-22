@@ -1,0 +1,32 @@
+{
+
+  "type": "module",
+
+  "dependencies": {
+
+    "@ffmpeg-installer/ffmpeg": "^1.1.0",
+
+    "axios": "^1.7.8",
+
+    "cors": "^2.8.5",
+
+    "express": "^4.21.1",
+
+    "ffi-napi": "^4.0.3",
+
+    "fs": "^0.0.1-security",
+
+    "koffi": "^2.9.1",
+
+    "multer": "^1.4.5-lts.1",
+
+    "ref-napi": "^3.0.3",
+
+    "ref-struct-napi": "^1.1.1",
+
+    "typescript": "^5.6.3"
+
+  }
+
+}
+

@@ -1,0 +1,78 @@
+{
+    "localhost": "http://localhost:",
+    "api": {    
+        "stream": {
+            "port": "http://localhost:5000",
+            "params": {
+                "optic": "/stream?type=optic",
+                "termal": "/stream?type=termal",
+                "file": "/file?type=",
+                "detect": "&detect="
+            },
+            "nnModel": {
+                "optic": "models/synt_model.pt",
+                "termal": "models/synt_model.pt"
+            },
+            "optic": {
+                "name": "отпика",
+                "channel": "/video?type=optic&detect=",
+                "model": "models/synt_model.pt"
+            },
+            "termal": {
+                "name": "тепляк",
+                "channel": "/video?type=termal&detect=",
+                "model": "models/synt_model.pt"
+            }
+        },
+        "nn": {
+            "port": 5000,
+            "getImage": "/get_image?detect=",
+            "numbers": "/api/predict/numbers",
+            "synt": "/api/predict/synt"
+        },
+        "dll": {
+            "port": 5001,
+            "protocolType": 3,
+            "init": "/api/init",
+            "cleanup": "/api/cleanup",
+            "login": "/api/login",
+            "ptz": "/api/ptz",
+            "wiper": "/api/wiper"
+        }
+    },
+    "params": {
+        "loginInfo": {
+            "devIP": "192.168.1.77",
+            "port": 5001,
+            "userName": "admin",
+            "password": "system123",
+            "nVerMain": 2,
+            "nVerSub": 1,
+            "nVerFix1": 4,
+            "nVerFix2": 8
+        },
+        "wiperAction": {
+            "on": 1,
+            "off": 2,
+            "auto": 3
+        },
+        "ptzCommand": {
+            "PTZ_UP": 1,
+            "PTZ_DOWN": 2,
+            "PTZ_LEFT": 3,
+            "PTZ_RIGHT": 4,
+            "PTZ_NEAR": 5,
+            "PTZ_FAR": 6,
+            "PTZ_STOP": 7,
+            "PTZ_PRESET_GOTO": 8,
+            "PTZ_PRESET_SET": 9,
+            "PTZ_PRESET_DEL": 10,
+            "PTZ_PRESET_CLEAR": 11,
+            "PTZ_SPEED_PAN": 12,
+            "PTZ_SPEED_TILT": 13,
+            "PTZ_FOCUS_NEAR": 14,
+            "PTZ_FOCUS_FAR": 15
+        }
+    }
+}
+  

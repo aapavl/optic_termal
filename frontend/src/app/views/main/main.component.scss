@@ -1,0 +1,29 @@
+@import "../../../assets/styles/colors";
+
+
+
+.page-streams {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+
+    .stream {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        flex-grow: 1;
+
+        .param-group  {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            .param-path {
+                display: flex;
+                gap: 10px;
+            }
+        }
+
+    }
+}
+

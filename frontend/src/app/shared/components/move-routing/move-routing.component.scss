@@ -1,0 +1,29 @@
+.move-routing-component {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+
+    .block-inputs {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    
+        .input {
+            display: flex;
+            justify-content: space-between;
+            gap: 5px;
+    
+            input {
+                width: auto;
+                max-width: 100px;
+            }
+        }
+    }
+    
+    .block-btns {
+        display: flex;
+        gap: 10px;
+    }
+
+}
+

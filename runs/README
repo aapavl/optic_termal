@@ -1,0 +1,37 @@
+1. Как установить и запустить сервер Nginx на Windows 10
+    https://levashove.ru/install-nginx-server-windows/
+
+2. Запустить сервер nginx
+
+3. Запустить скрипты gstreamer 
+    ( wev_server -> gstreamer_start_chn0.ps1
+                 -> gstreamer_start_chn1.ps1 )
+
+    возможно замена на приложуху obs, для преобразования потока 
+
+4. Запустить сервер связку с библиотекой dll 
+    ( web_server -> node api-server.js )
+
+5. Запустить проект frontend 
+    ( frontend -> ng serve)
+
+6. Для нейронок запускаем проект nn 
+    ( nn -> python start.py ) 
+
+
+
+# ----
+
+
+1. Запуск серверной части 
+	cd nn
+	python start.py (с бошой задержкой для видео)
+	python new.py (мин задержка)
+
+2. Запуск приложения 
+	cd frontend 
+	ng serve
+
+3. Заупск сервера для управления тепловизором 
+	cd backend 
+	

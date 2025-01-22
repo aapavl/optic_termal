@@ -1,0 +1,11 @@
+<div class="input-map-component">
+    <!-- <span>{{route.value}}</span> -->
+    <select class="combobox" [(ngModel)]="route.name" (ngModelChange)="onValueChange()">
+        <option value="right">вправо</option>
+        <option value="left">влево</option>
+        <option value="up">вверх</option>
+        <option value="down">вниз</option>
+    </select>
+    <input type="number" [(ngModel)]="route.value" (ngModelChange)="onValueChange()" value="0" min="0">
+    <div class="btn-main" (click)="clickTrash()">-</div>
+</div>

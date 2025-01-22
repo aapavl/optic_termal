@@ -1,0 +1,41 @@
+@import "../../../assets/styles/colors";
+@import "../../../assets/styles/mixins";
+
+
+
+.page-files {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+
+    .block-load {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .block-params {
+        display: flex;
+        // flex-direction: column;
+        gap: 30px;
+
+        .block {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+
+            .block-type {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            }
+        }
+    }
+
+    .block-view {
+        display: flex;
+        flex-grow: 1;
+        height: 100%;
+    }
+
+}
