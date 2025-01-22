@@ -119,7 +119,7 @@ def run_detect(
                 annotator.box_label(xyxy, label, color=colors(c, True))
 
                 xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) / gn).view(-1).tolist()  # normalized xywh
-                print('\n rect: ', f'{names[c]} {conf:.2f}', xywh)
+                # print('\n rect: ', f'{names[c]} {conf:.2f}', xywh)
 
         # Print time (inference-only)
         # print(f'Done. ({t3 - t2:.3f}s)')

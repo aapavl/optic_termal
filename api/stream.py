@@ -5,7 +5,8 @@ import cv2
 
 from detect import run_detect
 
-from datetime import datetime
+# from multiprocessing import Pool
+# from datetime import datetime
 
 
 def send_image(frame):
@@ -72,17 +73,8 @@ def generate_rtsp_stream(device, half, imgsz, model, names, dt, video_channel, f
     cap = cv2.VideoCapture(video_channel)
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 480)  # Задайте фиксированный размер
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 360)
-
-    # Получаем частоту кадров видео
-    fps = cap.get(cv2.CAP_PROP_FPS)
-    print("fps", fps)
-
+    
     cap_count = 0
-    # frame_delay = 1 / fps if fps > 0 else 0.033  # Время задержки между кадрами
-
-    # Время последнего отправленного кадра
-    last_frame_time = time.time()
-
     while True:
         ret, frame = cap.read()
         # if not ret:
@@ -94,21 +86,106 @@ def generate_rtsp_stream(device, half, imgsz, model, names, dt, video_channel, f
             cap.set(cv2.CAP_PROP_POS_FRAMES, 0)  # Перематываем видео в начало
             continue  # Переходим к следующему кадру
 
-        # Текущее время
-        current_time = time.time()
+        if flag_detect:
+            if cap_count % 10 != 0:
+                cap_count = cap_count + 1
+                continue
 
-        # Проверяем, прошла ли 1 секунда с момента последнего кадра
-        if current_time - last_frame_time >= 0.1:
-            last_frame_time = current_time  # Обновляем время последнего кадра
+            frame = run_detect(device, half, imgsz, model, names, dt, frame)  # просто кадры после нейронки
+            yield send_image(frame)
+        else:
+            yield send_image(frame)
 
-            if flag_detect:
-                if cap_count % fps != 0:
-                    cap_count = cap_count + 1
-                    continue
 
-                frame = run_detect(device, half, imgsz, model, names, dt, frame)  # просто кадры после нейронки
 
-        yield send_image(frame)
+# from concurrent.futures import ThreadPoolExecutor
+
+# from multiprocessing import Pool
+# # Функция обработки кадра
+# def process_frame(device, half, imgsz, model, names, dt, frame):
+#     # Здесь будет вызов run_detect или любая другая обработка кадра
+#     processed_frame = run_detect(device, half, imgsz, model, names, dt, frame)
+#     return processed_frame
+
+
+# # Функция для генерации кадров для трансляции
+# def generate_rtsp_stream(device, half, imgsz, model, names, dt, video_channel, flag_detect=False):
+#     cap = cv2.VideoCapture(video_channel)
+#     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 480)  # Задайте фиксированный размер
+#     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 360)
+
+
+#     # pool = Pool(processes=2)  # Настраиваем количество процессов
+#     # results = []
+
+#     cap_count = 0
+
+#         # Используем ThreadPoolExecutor для обработки кадров в нескольких потоках
+#     with ThreadPoolExecutor(max_workers=4) as executor:
+#         future_results = []
+
+#         while True:
+#             ret, frame = cap.read()
+#             if not ret:
+#                 print("Ошибка при захвате кадра, перематываем видео на начало")
+#                 cap.set(cv2.CAP_PROP_POS_FRAMES, 0)  # Перематываем видео на начало
+#                 continue
+
+#             if flag_detect:
+#                 # Пропускаем кадры (каждый второй кадр для оптимизации)
+#                 if cap_count % 2 != 1:
+#                     cap_count += 1
+#                     continue
+
+#                 # Отправляем кадр на обработку в фоновом потоке
+#                 future = executor.submit(process_frame, device, half, imgsz, model, names, dt, frame)
+#                 future_results.append(future)
+#                 cap_count += 1
+
+#                 # Проверяем завершённые задачи
+#                 completed_results = [f for f in future_results if f.done()]
+#                 for future in completed_results:
+#                     try:
+#                         processed_frame = future.result()
+#                         future_results.remove(future)  # Убираем завершённый future из списка
+#                         yield send_image(processed_frame)  # Отправляем обработанный кадр клиенту
+#                     except Exception as e:
+#                         print(f"Ошибка в обработке кадра: {e}")
+#                         future_results.remove(future)
+
+#             else:
+#                 # Отправляем оригинальный кадр без обработки
+#                 yield send_image(frame)
+
+#     cap.release()
+
+#     # while True:
+#     #     ret, frame = cap.read()
+#     #     if not ret:
+#     #         print("Ошибка при захвате кадра, перематываем видео на начало")
+#     #         cap.set(cv2.CAP_PROP_POS_FRAMES, 0)  # Перематываем видео в начало
+#     #         continue  # Переходим к следующему кадру
+
+#     #     if flag_detect:
+#     #         if cap_count % 2 != 1:
+#     #             cap_count = cap_count + 1
+#     #             continue
+
+#     #         result = pool.apply_async(run_detect, (device, half, imgsz, model, names, dt, frame))
+#     #         results.append(result)
+#     #         cap_count += 1
+
+#     #         # Извлекаем завершённые задачи
+#     #         for result in results[:]:
+#     #             if result.ready():
+#     #                 processed_frame = result.get()
+#     #                 results.remove(result)
+#     #                 yield send_image(processed_frame)
+#     #     else:
+#     #         yield send_image(frame)
+
+
+
 
 
 

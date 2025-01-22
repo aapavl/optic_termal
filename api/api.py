@@ -159,6 +159,9 @@ if __name__ == "__main__":
     current_directory = os.path.dirname(current_file_path)
     parent_directory = os.path.dirname(current_directory)
 
+    available_cores = os.cpu_count()
+    print(f"Доступное количество потоков: {available_cores}")
+
     # Загружаем модель
     model, names, dt = load_models(device, half, imgsz, model["donguz"])
 
