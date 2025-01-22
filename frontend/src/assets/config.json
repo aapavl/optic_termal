@@ -7,7 +7,8 @@
                 "optic": "/stream?type=optic",
                 "termal": "/stream?type=termal",
                 "file": "/file?type=",
-                "detect": "&detect="
+                "detect": "&detect=",
+                "login": "&login="
             },
             "nnModel": {
                 "optic": "models/synt_model.pt",

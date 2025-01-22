@@ -6,6 +6,7 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 import { ParamControlComponent } from 'src/app/shared/components/param-control/param-control.component';
 
 import Config from '../../../assets/config.json';// assert { type: "json" };
+import { AuthService } from 'src/app/shared/services/auth.service';
 
 
 
@@ -36,20 +37,20 @@ export class MainComponent implements OnInit {
 
   // данные стиримов
   stream = Config.api.stream;
-  imgTermal: string = this.stream.port + this.stream.params.termal;
-  imgOptic: string = this.stream.port + this.stream.params.optic;// + this.stream.params.detect + this.opticParam[3].active;
+  imgTermal: string = this.stream.port + this.stream.params.termal + this.stream.params.login + this.isLogged;
+  imgOptic: string = this.stream.port + this.stream.params.optic  + this.stream.params.login + this.isLogged;// + this.stream.params.detect + this.opticParam[3].active;
 
   @ViewChildren(ParamControlComponent, { read: ElementRef }) paramControls!: QueryList<ElementRef>; // получили все элменты ParamControlComponent 
 
   constructor(
     // private apiService: ApiService, 
-    // private authService: AuthService,
+    private authService: AuthService,
   ) { }
 
 
   ngOnInit(): void {
     // срауз выполняем подписку на логин и геймпад
-    // this.subscribeAuth();
+    this.subscribeAuth();
   }
 
   ngOnDestroy() {
@@ -60,14 +61,17 @@ export class MainComponent implements OnInit {
 
   // ------------------------------------
   // подписочкa 
-  // subscribeAuth() {
-  //   const auth = this.authService.isLogged$.subscribe((data: boolean) => {
-  //     console.log('Change logged: ', data);
-  //     this.isLogged = data;
-  //     this.userId = this.authService.getUserId();
-  //   });
-  //   this.subscriptions.add(auth);
-  // }
+  subscribeAuth() {
+    const auth = this.authService.isLogged$.subscribe((data: boolean) => {
+      console.log('Change logged: ', data);
+      this.isLogged = data;
+      this.userId = this.authService.getUserId();
+      
+      this.imgTermal = this.stream.port + this.stream.params.termal + this.stream.params.login + this.isLogged;
+      this.imgOptic = this.stream.port + this.stream.params.optic + this.stream.params.login + this.isLogged;
+    });
+    this.subscriptions.add(auth);
+  }
 
 
 

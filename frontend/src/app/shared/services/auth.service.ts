@@ -39,6 +39,8 @@ export class AuthService implements OnDestroy {
 
 
   onLogin() {
+    console.log('Запрос на тепляк');
+    
     this.apiService.initialize(Config.api.dll.protocolType)
     .subscribe({
       next: (response: ResponseTypes.Default) => {

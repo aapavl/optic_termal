@@ -16,6 +16,8 @@ export class MoveRoutingComponent implements OnInit {
   @Input() userId!: number;
   @Input() isLogged!: boolean;
 
+  isLoopRouting: boolean = false;
+
   // Массив для хранения состояний каждого компонента
   routes: PresetType[] = [];
 
@@ -64,8 +66,17 @@ export class MoveRoutingComponent implements OnInit {
   }
 
 
+  async loopRoute(): Promise<void>  {
+    this.isLoopRouting = !this.isLoopRouting;   
+    console.log("--> зацикливание: ", this.isLoopRouting);
 
-  async mapRoute() {
+    while (this.isLoopRouting) {
+      await this.mapRoute(); // Дождаться завершения функции
+    }
+  }
+
+
+  async mapRoute(): Promise<void> {
     console.log("Запустили сценарий:", this.userId, this.isLogged);
 
     let curCommand: number | null = null;
@@ -92,6 +103,10 @@ export class MoveRoutingComponent implements OnInit {
         await this.delay(item.value);
         this.subscribePtzParams(this.command.stop);
         console.log(`Команда ${item.name} завершена.`);
+      } 
+      else {
+        await this.delay(item.value);
+        console.log(`Команда ${item.name} не сработала.`);
       }
     }
     console.log("Сценарий завершен.");
