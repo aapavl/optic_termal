@@ -83,16 +83,16 @@ export class MoveRoutingComponent implements OnInit {
 
     for (const item of this.routes) {
       switch (item.name) {
-        case "вправо":
+        case "right":
           curCommand = this.command.right;
           break;
-        case "влево":
+        case "left":
           curCommand = this.command.left;
           break;
-        case "вверх":
+        case "up":
           curCommand = this.command.up;
           break;
-        case "вниз":
+        case "down":
           curCommand = this.command.down;
           break;
       };
