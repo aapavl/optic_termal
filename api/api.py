@@ -1,7 +1,7 @@
 from flask import Flask, request, Response
 from flask_cors import CORS
 
-from stream import generate_stream, generate_video, generate_image, generate_rtsp_stream, generate_video_like_stream
+from stream import generate_stream, generate_video, generate_image, generate_rtsp_stream, generate_video_like_stream, send_image
 from detect import run_detect, load_models
 
 
@@ -110,19 +110,132 @@ def stream_feed():
 
 
 
+# current_position = {}  # Глобальный словарь для хранения текущей позиции каждого видеофайла
+
+import threading
+import queue
+import time
+
+current_position = {}  # Глобальный словарь для хранения текущей позиции каждого видеофайла
+
+class VideoStreamer:
+    def __init__(self, video_path, buffer_size=10):
+        self.video_path = video_path
+        self.buffer_size = buffer_size
+        self.frame_queue = queue.Queue(maxsize=self.buffer_size)
+        self.stop_event = threading.Event()
+        self.thread = None
+
+    def start(self):
+        if self.thread is None or not self.thread.is_alive():
+            self.thread = threading.Thread(target=self.stream_frames)
+            self.thread.start()
+
+    def stop(self):
+        self.stop_event.set()
+        if self.thread is not None:
+            self.thread.join()
+
+    def stream_frames(self):
+        cap = cv2.VideoCapture(self.video_path)
+        cap.set(cv2.CAP_PROP_FRAME_WIDTH, 480)
+        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 360)
+
+        filename = os.path.basename(self.video_path)  # Получаем только имя файла
+
+        # Если текущая позиция сохранена, устанавливаем её
+        if filename in current_position:
+            cap.set(cv2.CAP_PROP_POS_FRAMES, current_position[filename])
+
+        while not self.stop_event.is_set():
+            ret, frame = cap.read()
+            if not ret:
+                print(f"Ошибка при захвате кадра, перематываем видео {self.video_path} на начало")
+                cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+                continue
+
+            # Сохраняем текущую позицию видеофайла
+            current_position[filename] = cap.get(cv2.CAP_PROP_POS_FRAMES)
+
+            try:
+                self.frame_queue.put_nowait(frame)
+            except queue.Full:
+                pass
+
+            time.sleep(0.01)  # Небольшая пауза для предотвращения перегрузки процессора
+
+        cap.release()
+
+    def get_frame(self):
+        try:
+            return self.frame_queue.get(timeout=1)
+        except queue.Empty:
+            return None
+
+
+# import threading
+# import queue
+# import time
+
+# class VideoStreamer:
+#     def __init__(self, video_path, buffer_size=10):
+#         self.video_path = video_path
+#         self.buffer_size = buffer_size
+#         self.frame_queue = queue.Queue(maxsize=self.buffer_size)
+#         self.stop_event = threading.Event()
+#         self.thread = None
+
+#     def start(self):
+#         if self.thread is None or not self.thread.is_alive():
+#             self.thread = threading.Thread(target=self.stream_frames)
+#             self.thread.start()
+
+#     def stop(self):
+#         self.stop_event.set()
+#         if self.thread is not None:
+#             self.thread.join()
+
+#     def stream_frames(self):
+#         cap = cv2.VideoCapture(self.video_path)
+#         cap.set(cv2.CAP_PROP_FRAME_WIDTH, 480)
+#         cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 360)
+
+#         while not self.stop_event.is_set():
+#             ret, frame = cap.read()
+#             if not ret:
+#                 print("Ошибка при захвате кадра, перематываем видео на начало")
+#                 cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+#                 continue
+
+#             try:
+#                 self.frame_queue.put_nowait(frame)
+#             except queue.Full:
+#                 pass
+
+#             time.sleep(0.01)  # Небольшая пауза для предотвращения перегрузки процессора
+
+#         cap.release()
+
+#     def get_frame(self):
+#         try:
+#             return self.frame_queue.get(timeout=1)
+#         except queue.Empty:
+#             return None
 
 
 
 
 @app.route('/file', methods=['GET'])
 def file_feed():
+    global current_position
+
     file = request.args.get('type', 'video_04_27_2023_07_59_49_index_11.jpg')
     flag_detect = request.args.get('detect', 'false').lower() == 'true'
 
-    temp = os.path.join(parent_directory, 'data')
+    dir_file = 'data/old' if flag_detect else 'data'
+    temp = os.path.join(parent_directory, dir_file)
     path = os.path.join(temp, file)
     print("Файл", path)
-
 
     # Работает с изображением
     if ".jpg" in path.lower():
@@ -133,11 +246,23 @@ def file_feed():
 
     # Работа с видео файлом
     else:
+        def generate_empty(video_channel):
+            streamer = VideoStreamer(video_channel)
+            streamer.start()
+
+            while True:
+                frame = streamer.get_frame()
+                if frame is not None:
+                    yield send_image(frame)
+
+            streamer.stop()
+
         return Response(
             # generate_video(device, half, imgsz, model, names, dt, path, flag_detect),
-            generate_rtsp_stream(device, half, imgsz, model, names, dt, path, flag_detect),
+            generate_empty(path),
             mimetype='multipart/x-mixed-replace; boundary=frame'
         )
+
 
 
 

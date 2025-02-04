@@ -65,9 +65,12 @@ export class MoveRoutingComponent implements OnInit {
     this.routes.splice(id-1, 1); 
   }
 
+  isActive: boolean = false;
 
   async loopRoute(): Promise<void>  {
-    this.isLoopRouting = !this.isLoopRouting;   
+    this.isLoopRouting = !this.isLoopRouting;
+    this.isActive = !this.isActive;
+
     console.log("--> зацикливание: ", this.isLoopRouting);
 
     while (this.isLoopRouting) {
@@ -75,6 +78,13 @@ export class MoveRoutingComponent implements OnInit {
     }
   }
 
+  async clickRoute(): Promise<void>  {
+    this.isActive = !this.isActive;
+
+    if (this.isActive) {
+      await this.mapRoute(); // Дождаться завершения функции
+    }
+  }
 
   async mapRoute(): Promise<void> {
     console.log("Запустили сценарий:", this.userId, this.isLogged);
@@ -82,6 +92,8 @@ export class MoveRoutingComponent implements OnInit {
     let curCommand: number | null = null;
 
     for (const item of this.routes) {
+      if (!this.isActive) break;
+
       switch (item.name) {
         case "right":
           curCommand = this.command.right;
@@ -102,7 +114,7 @@ export class MoveRoutingComponent implements OnInit {
         this.subscribePtzParams(curCommand);
         await this.delay(item.value);
         this.subscribePtzParams(this.command.stop);
-        console.log(`Команда ${item.name} завершена.`);
+        console.log(` ${item.name}.`);
       } 
       else {
         await this.delay(item.value);
@@ -117,7 +129,7 @@ export class MoveRoutingComponent implements OnInit {
   }
 
   subscribePtzParams(command: number) {
-    console.log("Тут должа шо-то делать камера (PTZ): ", command, this.isLogged);
+    // console.log("Тут должа шо-то делать камера (PTZ): ", command, this.isLogged);
     if (!this.isLogged) return;
 
     const tmp = this.apiService.ptz(this.userId, 0, command)
