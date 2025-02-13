@@ -1,4 +1,4 @@
-import Config from './config.json' assert { type: "json" };
+import Config from '../config.json' assert { type: "json" };
 import koffi from 'koffi';
 import { 
     IPC_NET_Init, IPC_NET_Cleanup,
@@ -13,11 +13,12 @@ export {
 };
 
 
+const requests = Config.lib.requests;
 
 
 // -------------------------------------------------------
 // init
-function init(protocolType = Config.api.dll.protocolType) {
+function init(protocolType = requests.init.params.protocolType) {
     console.log('init function');
     return IPC_NET_Init(protocolType, null);
 }
@@ -25,7 +26,7 @@ function init(protocolType = Config.api.dll.protocolType) {
 
 // -------------------------------------------------------
 // cleanup
-function cleanup(protocolType = Config.api.dll.protocolType) {
+function cleanup(protocolType = requests.cleanup.params.protocolType) {
     console.log('cleanup function');
     return IPC_NET_Cleanup(protocolType);
 }
@@ -35,7 +36,7 @@ function cleanup(protocolType = Config.api.dll.protocolType) {
 // login
 function login() {
     console.log('login function');
-    const { devIP, port, userName, password, nVerMain, nVerSub, nVerFix1, nVerFix2 } = Config.params.loginInfo;
+    const { devIP, port, userName, password, nVerMain, nVerSub, nVerFix1, nVerFix2 } = requests.cleanup.params.loginInfo;
     const dVersion = (nVerMain << 24) | (nVerSub << 16) | (nVerFix1 << 8) | nVerFix2;
     console.log('login param:', { devIP, port, userName, password, dVersion });
 

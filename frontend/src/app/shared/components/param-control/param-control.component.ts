@@ -1,7 +1,7 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { ParamControl } from 'src/types/param-control.namespace';
 
-import Config from '../../../../assets/config.json';//  assert { type: "json" };
+import Config from '../../../../../../config.json';//  assert { type: "json" };
 import { AuthService } from '../../services/auth.service';
 import { ApiService } from '../../services/api.service';
 import { Subscription } from 'rxjs';
@@ -35,14 +35,7 @@ export class ParamControlComponent implements OnInit {
 
   private subscriptions: Subscription = new Subscription();
 
-  command = {
-    zoomOut: Config.params.ptzCommand.PTZ_NEAR,
-    zoomIn: Config.params.ptzCommand.PTZ_FAR,
-    focusOut: Config.params.ptzCommand.PTZ_FOCUS_NEAR,
-    focusIn: Config.params.ptzCommand.PTZ_FOCUS_FAR,
-    stop: Config.params.ptzCommand.PTZ_STOP
-  }
-
+  private ptzCommand = Config.lib.requests.ptz.params.command;
 
   constructor(
     private authService: AuthService,
@@ -83,16 +76,16 @@ export class ParamControlComponent implements OnInit {
   onBtnDown(side: number) {
     let command: number | null = null;
     if (this.params.text === "Фокус" && side > 0) {
-      command = this.command.focusOut;
+      command = this.ptzCommand.zoomMinus;
     }
     if (this.params.text === "Фокус" && side < 0) {
-      command = this.command.focusIn;
+      command = this.ptzCommand.focusPlus;
     }
     if (this.params.text === "Масштаб" && side > 0) {
-      command = this.command.zoomOut;
+      command = this.ptzCommand.zoomMinus;
     }
     if (this.params.text === "Масштаб" && side < 0) {
-      command = this.command.zoomIn;
+      command = this.ptzCommand.zoomPlus;
     }
 
     if (!command) return;
@@ -102,7 +95,7 @@ export class ParamControlComponent implements OnInit {
 
   onBtnUp() {
     // this.commandActive = false;
-    this.subscribePtzParams(this.command.stop);
+    this.subscribePtzParams(this.ptzCommand.stop);
   }
 
   subscribePtzParams(command: number) {

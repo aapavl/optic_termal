@@ -2,7 +2,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject, catchError, Observable, Subject } from 'rxjs';
 import { ApiService } from './api.service';
 import { ResponseTypes } from 'src/types/response-api.namespace';
-import Config from '../../../assets/config.json';//  assert { type: "json" }; 
+import Config from '../../../../../config.json';//  assert { type: "json" }; 
 
 // const Config = require('../../../../config.json');
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -15,6 +15,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 export class AuthService implements OnDestroy {
 
+  private requests = Config.lib.requests;
+  
   private userId: number = -1;
 
   private isLogged = new BehaviorSubject<boolean>(false);        // текущщее состояние
@@ -41,7 +43,7 @@ export class AuthService implements OnDestroy {
   onLogin() {
     console.log('Запрос на тепляк');
     
-    this.apiService.initialize(Config.api.dll.protocolType)
+    this.apiService.initialize(this.requests.init.params.protocolType)
     .subscribe({
       next: (response: ResponseTypes.Default) => {
         console.log('.Init:', response);
@@ -76,7 +78,7 @@ export class AuthService implements OnDestroy {
 
 
   onCleanup() {
-    this.apiService.cleanup(Config.api.dll.protocolType).subscribe((response: ResponseTypes.Default) => {
+    this.apiService.cleanup(this.requests.cleanup.params.protocolType).subscribe((response: ResponseTypes.Default) => {
         console.log('.Cleanup:', response);
         this.loggedChange(-1);
     });

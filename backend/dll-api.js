@@ -3,7 +3,7 @@ import cors from 'cors';
 import path from 'path';
 import url from 'url';
 
-import Config from './config.json' assert { type: "json" };
+import Config from '../config.json' assert { type: "json" };
 import { init, cleanup, login, wiper, ptz } from './dll-service.js'
 
 
@@ -13,10 +13,10 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const dll = Config.api.dll;
+const requests = Config.lib.requests;
 
 // Инициализация
-app.post(dll.init, (req, res) => {
+app.post(requests.init.url, (req, res) => {
     const result = init(req.body.protocolType);
     if (result > 0) {
         // console.log("Init success");
@@ -27,7 +27,7 @@ app.post(dll.init, (req, res) => {
 });
 
 // Очистка
-app.post(dll.cleanup, (req, res) => {
+app.post(requests.cleanup.url, (req, res) => {
     const protocolType = req.body.protocolType;
     const result = cleanup(protocolType);
     if (result > 0) {
@@ -39,7 +39,7 @@ app.post(dll.cleanup, (req, res) => {
 
 
 // Логин на устройство
-app.post(dll.login, (req, res) => {
+app.post(requests.login.url, (req, res) => {
     const result = login();
     if (result > 0) {
         // console.log("Login success");
@@ -51,7 +51,7 @@ app.post(dll.login, (req, res) => {
 
 
 // 24.1 - Установите параметры стеклоочистителя - WiperSet
-app.post(dll.wiper, (req, res) => {
+app.post(requests.wiper.url, (req, res) => {
     const { userId, wiperAction } = req.body
     console.log(userId, wiperAction);
     const result = wiper(userId, wiperAction);
@@ -65,7 +65,7 @@ app.post(dll.wiper, (req, res) => {
 
 
 // 31.1 - Управление PTZ - PTZ
-app.post(dll.ptz, (req, res) => {
+app.post(requests.ptz.url, (req, res) => {
     const { userId, channelId, command } = req.body
     const result = ptz(userId, channelId, command);
     if (result > 0) {
@@ -78,7 +78,7 @@ app.post(dll.ptz, (req, res) => {
 
 
 
-app.listen(dll.port, () => {
-    console.log(`Server running on ${Config.localhost + dll.port}`);
+app.listen(Config.lib.port, () => {
+    console.log(`Server running on ${Config.lib.port + Config.lib.ip}`);
 });
 

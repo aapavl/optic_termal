@@ -2,7 +2,7 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { AnglesType } from 'src/types/angles.type';
 
 
-import Config from '../../../assets/config.json';// assert { type: "json" };
+import Config from '../../../../../config.json';// assert { type: "json" };
 import { ApiService } from '../services/api.service';
 import { AuthService } from '../services/auth.service';
 import { Subscription } from 'rxjs';
@@ -19,22 +19,15 @@ export class LayoutComponent implements OnInit {
   isOpenSpryt: boolean = true;
   sidebarMin: boolean = false;
 
-  // command = {
-  //   left: Config.params.ptzCommand.PTZ_LEFT,
-  //   right: Config.params.ptzCommand.PTZ_RIGHT,
-  //   up: Config.params.ptzCommand.PTZ_UP,
-  //   down: Config.params.ptzCommand.PTZ_DOWN,
-  //   stop: Config.params.ptzCommand.PTZ_STOP
-  // }
-
-
+ 
   // auth
   userId: number = -1;
   isLogged: boolean = false;
-
   
+  private wiperCommand = Config.lib.requests.wiper.params.command;
+
   distance: number = 1500; 
-  angles: AnglesType = {   // значения получаемы из др компонентов
+  angles: AnglesType = {   // *** значения получаемы из др компонентов
     horizontal: 0,
     vertical: 0
   } 
@@ -99,12 +92,12 @@ export class LayoutComponent implements OnInit {
     console.log("Типа махнули дворником (wiper)", this.userId, this.isLogged);
 
     if (!this.isLogged) return;
-    this.apiService.wiper(this.userId, Config.params.wiperAction.on)
+    this.apiService.wiper(this.userId, this.wiperCommand.on)
       .subscribe(response => {
         console.log('.Wiper: ', response);
 
         setTimeout(() => {
-          this.apiService.wiper(this.userId, Config.params.wiperAction.off)
+          this.apiService.wiper(this.userId, this.wiperCommand.off)
           .subscribe(response => { console.log('.Wiper: ', response); });
         }, 500);
     });

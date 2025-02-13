@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import Config from '../../../../assets/config.json';
+import Config from '../../../../../../config.json';
 import { ApiService } from '../../services/api.service';
 import { Subscription } from 'rxjs';
 import { PresetType } from 'src/types/preset.type';
@@ -21,13 +21,7 @@ export class MoveRoutingComponent implements OnInit {
   // Массив для хранения состояний каждого компонента
   routes: PresetType[] = [];
 
-  command = {
-    left: Config.params.ptzCommand.PTZ_LEFT,
-    right: Config.params.ptzCommand.PTZ_RIGHT,
-    up: Config.params.ptzCommand.PTZ_UP,
-    down: Config.params.ptzCommand.PTZ_DOWN,
-    stop: Config.params.ptzCommand.PTZ_STOP
-  }
+  private ptzCommand = Config.lib.requests.ptz.params.command;
 
   private subscriptions: Subscription = new Subscription();
 
@@ -96,16 +90,16 @@ export class MoveRoutingComponent implements OnInit {
 
       switch (item.name) {
         case "right":
-          curCommand = this.command.right;
+          curCommand = this.ptzCommand.right;
           break;
         case "left":
-          curCommand = this.command.left;
+          curCommand = this.ptzCommand.left;
           break;
         case "up":
-          curCommand = this.command.up;
+          curCommand = this.ptzCommand.up;
           break;
         case "down":
-          curCommand = this.command.down;
+          curCommand = this.ptzCommand.down;
           break;
       };
       
@@ -113,7 +107,7 @@ export class MoveRoutingComponent implements OnInit {
       if (curCommand) {
         this.subscribePtzParams(curCommand);
         await this.delay(item.value);
-        this.subscribePtzParams(this.command.stop);
+        this.subscribePtzParams(this.ptzCommand.stop);
         console.log(` ${item.name}.`);
       } 
       else {

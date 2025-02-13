@@ -13,6 +13,9 @@ import cv2
 import numpy as np
 import torch
 
+
+import json 
+
 FILE = Path(__file__).resolve()
 ROOT = FILE.parents[0]  # YOLOv5 root directory
 if str(ROOT) not in sys.path:
@@ -29,33 +32,40 @@ from utils.torch_utils import load_classifier, select_device, time_sync
 
 from utils.augmentations import Albumentations, augment_hsv, copy_paste, letterbox, mixup, random_perspective
 
-# from flask import Flask, request, jsonify, send_file, Response
-# from flask_cors import CORS
 
 import subprocess
 
+# настраиваем запросы с других ip
 app = Flask(__name__)
 CORS(app)  # Разрешить все источники
 
+# парсим json
+with open('../config.json', 'r') as file:
+    Config = json.load(file)
 
-channel = {
-    "optic": "rtsp://admin:123456@192.168.1.77:554/stream_chn0.h264",
-    "termal": "rtsp://admin:123456@192.168.1.77:554/stream_chn1.h264",
-}
+# print(Config['api']['ip'])
 
-video = {
-    # "optic": "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
-    # "termal": "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-    "optic": "../data/records/20240521-132110-802.asf",
-    "termal": "../data/records/20240521-132110-829.asf",
-}
+requests = Config['api']['requests']
+source = Config['api']['source']
 
-model = {
-    "pt": "models/synt_model.pt",
-    "donguz": "models/best_donguz.pt",
-    "synthetic": "models/best_synthetic.pt",
-    "onnx": "models/model_os.onnx"
-}
+# channel = {
+#     "optic": "rtsp://admin:123456@192.168.1.77:554/stream_chn0.h264",
+#     "termal": "rtsp://admin:123456@192.168.1.77:554/stream_chn1.h264",
+# }
+
+# video = {
+#     # "optic": "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+#     # "termal": "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+#     "optic": "../data/records/20240521-132110-802.asf",
+#     "termal": "../data/records/20240521-132110-829.asf",
+# }
+
+# model = {
+#     "pt": "models/synt_model.pt",
+#     "donguz": "models/best_donguz.pt",
+#     "synthetic": "models/best_synthetic.pt",
+#     "onnx": "models/model_os.onnx"
+# }
 
 
 
@@ -78,7 +88,7 @@ def is_device_reachable():
 
 
 # Главная страница для потокового видео
-@app.route('/stream')
+@app.route(requests['url']['stream'])
 def stream_feed():
     is_stream = request.args.get('login', "false")
     type_channel = request.args.get('type', "optic")
@@ -86,15 +96,15 @@ def stream_feed():
     print(is_stream)
 
     if is_stream == "true":
-        stream_channel = channel[type_channel]
+        stream_channel = source[type_channel]['channel']['rtsp']
         print("Запрос на поток", type_channel, stream_channel)
         return Response(generate_stream(stream_channel),
                 mimetype='multipart/x-mixed-replace; boundary=frame')
     
     else:
-        stream_channel = video[type_channel]
+        stream_channel = source[type_channel]['channel']['video']
         print("Запрос на поток", type_channel, stream_channel)
-        return Response(generate_video_like_stream(stream_channel),
+        return Response(generate_video_like_stream("../" + stream_channel),
             mimetype='multipart/x-mixed-replace; boundary=frame')
 
     # if is_device_reachable():
@@ -173,63 +183,12 @@ class VideoStreamer:
             return None
 
 
-# import threading
-# import queue
-# import time
 
-# class VideoStreamer:
-#     def __init__(self, video_path, buffer_size=10):
-#         self.video_path = video_path
-#         self.buffer_size = buffer_size
-#         self.frame_queue = queue.Queue(maxsize=self.buffer_size)
-#         self.stop_event = threading.Event()
-#         self.thread = None
-
-#     def start(self):
-#         if self.thread is None or not self.thread.is_alive():
-#             self.thread = threading.Thread(target=self.stream_frames)
-#             self.thread.start()
-
-#     def stop(self):
-#         self.stop_event.set()
-#         if self.thread is not None:
-#             self.thread.join()
-
-#     def stream_frames(self):
-#         cap = cv2.VideoCapture(self.video_path)
-#         cap.set(cv2.CAP_PROP_FRAME_WIDTH, 480)
-#         cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 360)
-
-#         while not self.stop_event.is_set():
-#             ret, frame = cap.read()
-#             if not ret:
-#                 print("Ошибка при захвате кадра, перематываем видео на начало")
-#                 cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
-#                 continue
-
-#             try:
-#                 self.frame_queue.put_nowait(frame)
-#             except queue.Full:
-#                 pass
-
-#             time.sleep(0.01)  # Небольшая пауза для предотвращения перегрузки процессора
-
-#         cap.release()
-
-#     def get_frame(self):
-#         try:
-#             return self.frame_queue.get(timeout=1)
-#         except queue.Empty:
-#             return None
-
-
-
-
-@app.route('/file', methods=['GET'])
+@app.route(requests['url']['file'], methods=['GET'])
 def file_feed():
     global current_position
 
-    file = request.args.get('type', 'video_04_27_2023_07_59_49_index_11.jpg')
+    file = request.args.get('name', 'video_04_27_2023_07_59_49_index_11.jpg')
     flag_detect = request.args.get('detect', 'false').lower() == 'true'
 
     dir_file = 'data/old' if flag_detect else 'data'
@@ -288,7 +247,7 @@ if __name__ == "__main__":
     print(f"Доступное количество потоков: {available_cores}")
 
     # Загружаем модель
-    model, names, dt = load_models(device, half, imgsz, model["donguz"])
+    model, names, dt = load_models(device, half, imgsz, source['optic']['model']['donguz'])
 
     # Запускаем Flask сервер в основном потоке
     app.run(host='0.0.0.0', port=5000, debug=True)

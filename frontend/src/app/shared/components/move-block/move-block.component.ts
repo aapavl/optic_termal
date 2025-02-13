@@ -8,11 +8,10 @@ import { AnglesType } from '../../../../types/angles.type';
 // import { GamepadEnum } from 'src/types/gamapad/gamepad.enum';
 import { Subscription } from 'rxjs';
 import { ApiService } from '../../services/api.service';
-import Config from '../../../../assets/config.json';//  assert { type: "json" };
+import Config from '../../../../../../config.json';//  assert { type: "json" };
 import { AuthService } from '../../services/auth.service';
 
 
-const TIMER_VALUE: number = 100;
 const STEP_VALUE: number = 1;
 
 // delay: number = 1000; // работает ли ???
@@ -36,10 +35,10 @@ export class MoveBlockComponent implements OnInit {
   @Input() angles!: AnglesType;
   @Output() anglesChange = new EventEmitter<AnglesType>();
 
-  @ViewChild('left') left!: ElementRef; 
-  @ViewChild('right') right!: ElementRef; 
-  @ViewChild('down') down!: ElementRef; 
-  @ViewChild('up') up!: ElementRef; 
+  @ViewChild('left')   left!: ElementRef; 
+  @ViewChild('right')  right!: ElementRef; 
+  @ViewChild('down')   down!: ElementRef; 
+  @ViewChild('up')     up!: ElementRef; 
   @ViewChild('center') center!: ElementRef; 
 
   private subscriptions: Subscription = new Subscription();
@@ -47,13 +46,7 @@ export class MoveBlockComponent implements OnInit {
   // переменные для сигналов изменения событий 
   // private commandActive: boolean = false;
 
-  command = {
-    left: Config.params.ptzCommand.PTZ_LEFT,
-    right: Config.params.ptzCommand.PTZ_RIGHT,
-    up: Config.params.ptzCommand.PTZ_UP,
-    down: Config.params.ptzCommand.PTZ_DOWN,
-    stop: Config.params.ptzCommand.PTZ_STOP
-  }
+  ptzCommand = Config.lib.requests.ptz.params.command;
 
   private isLogged: boolean = false;
   private userId: number = -1;
@@ -139,7 +132,7 @@ export class MoveBlockComponent implements OnInit {
 
   onBtnUp() {
     // this.commandActive = false;
-    this.subscribePtzMoveXY(this.command.stop);
+    this.subscribePtzMoveXY(this.ptzCommand.stop);
   }
   
   subscribePtzMoveXY(command: number) {

@@ -1,14 +1,14 @@
 <div class="page-streams">
 
   <div class="stream"> 
-      <div class="title-2">Видеопоток: {{stream.optic.name}}</div>
+      <div class="title-2">Видеопоток: {{streamNames.optic}}</div>
       <div class="param-group">
         <div class="param-path">
           <param-control-component
             class="focusElement" tabindex="0" 
             *ngFor="let param of opticParam.slice(0, 3); let i = index"
             [params]="opticParam[i]" 
-            (valueChange)="onParamValueChange($event, stream.optic.name, i)"
+            (valueChange)="onParamValueChange($event, streamNames.optic, i)"
           >
           </param-control-component>
         </div>
@@ -16,7 +16,7 @@
           <param-control-component 
             class="focusElement" tabindex="0" 
             [params]="opticParam[3]"
-            (activeChange)="onParamNNChange($event, stream.optic.name)"
+            (activeChange)="onParamNNChange($event, streamNames.optic)"
           >
           </param-control-component>
         </div>
@@ -25,14 +25,14 @@
     </div>
   
     <div class="stream"> 
-      <div class="title-2">Видеопоток: {{stream.termal.name}}</div>
+      <div class="title-2">Видеопоток: {{streamNames.termal}}</div>
       <div class="param-group">
         <div class="param-path">
           <param-control-component
             class="focusElement" tabindex="0" 
             *ngFor="let param of termalParam.slice(0, 2); let i = index"
             [params]="termalParam[i]" 
-            (valueChange)="onParamValueChange($event, stream.termal.name, i)"
+            (valueChange)="onParamValueChange($event, streamNames.termal, i)"
           >
           </param-control-component>
         </div>
@@ -46,7 +46,7 @@
           <param-control-component 
             class="focusElement" tabindex="0" 
             [params]="termalParam[3]"
-            (activeChange)="onParamNNChange($event, stream.termal.name)"
+            (activeChange)="onParamNNChange($event, streamNames.termal)"
           >
           </param-control-component>
         </div> 

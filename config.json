@@ -1,0 +1,122 @@
+{
+    "api": {    
+        "ip": "http://192.168.1.101:",
+        "port": 5000,
+        "names": {
+            "optic": "отпика",
+            "termal": "тепляк"
+        },
+        "source": {
+            "optic": {
+                "channel": {
+                    "rtsp": "rtsp://admin:123456@192.168.1.77:554/stream_chn0.h264",
+                    "video": "data/records/20240521-132110-802.asf"
+                },
+                 "model": {
+                    "pt": "models/synt_model.pt",
+                    "donguz": "models/best_donguz.pt",
+                    "synthetic": "models/best_synthetic.pt",
+                    "onnx": "models/model_os.onnx"
+                }
+            },
+            "termal": {
+                "channel": {
+                    "rtsp": "rtsp://admin:123456@192.168.1.77:554/stream_chn1.h264",
+                    "video": "data/records/20240521-132110-829.asf"
+                },
+                 "model": {
+                    "pt": "models/synt_model.pt",
+                    "donguz": "models/best_donguz.pt",
+                    "synthetic": "models/best_synthetic.pt",
+                    "onnx": "models/model_os.onnx"
+                }
+            }
+        },
+        "requests": {
+            "url": {
+                "stream": "/stream",
+                "file": "/file"
+            },
+            "params": {
+                "type": {
+                    "optic": "?type=optic",
+                    "termal": "?type=termal"
+                },
+                "detect": {
+                    "true": "&detect=true",
+                    "false": "&detect=false"
+                },
+                "login": {
+                    "true": "&login=true",
+                    "false": "&login=false"
+                },
+                "file": "&name="
+            }
+        }
+    },
+    "lib": {
+        "ip": "http://localhost:",
+        "port": 5001,
+        "requests": {
+            "init": {
+                "url": "/api/init",
+                "params": {
+                    "protocolType": 3
+                }
+            },
+            "cleanup": {
+                "url": "/api/cleanup",
+                "params": {
+                    "protocolType": 3
+                }
+            },
+            "login": {
+                "url": "/api/login",
+                "params": {            
+                    "devIP": "192.168.1.77",
+                    "port": 5001,
+                    "userName": "admin",
+                    "password": "system123",
+                    "nVerMain": 2,
+                    "nVerSub": 1,
+                    "nVerFix1": 4,
+                    "nVerFix2": 8
+                }
+            },
+            "wiper": {
+                "url": "/api/wiper",
+                "params": {            
+                    "command": {
+                        "on": 1,
+                        "off": 2,
+                        "auto": 3
+                    }
+                }
+            },
+            "ptz": {
+                "url": "/api/ptz",
+                "params": {        
+                    "command": {
+                        "up": 1,
+                        "down": 2,
+                        "left": 3,
+                        "right": 4,
+                        "zoomMinus": 5,
+                        "zoomPlus": 6,
+                        "stop": 7,
+                        "PTZ_PRESET_GOTO": 8,
+                        "PTZ_PRESET_SET": 9,
+                        "PTZ_PRESET_DEL": 10,
+                        "PTZ_PRESET_CLEAR": 11,
+                        "PTZ_SPEED_PAN": 12,
+                        "PTZ_SPEED_TILT": 13,
+                        "focusMinus": 14,
+                        "focusPlus": 15
+                    }
+                }
+            }
+        }
+    }
+
+}
+  
