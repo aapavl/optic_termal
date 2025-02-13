@@ -19,7 +19,9 @@ const STEP_VALUE: number = 0.1;  // величина шага ( может бы�
 })
 export class ParamControlComponent implements OnInit {
 
-  @Input() params!: ParamControl.Type;
+  @Input() paramInput!: ParamControl.TypeBool | ParamControl.TypeNumber;
+  paramBool: ParamControl.TypeBool | null = null;  
+  paramNumber: ParamControl.TypeNumber | null = null; 
 
   // уведомления main.component об изменениях (значения - для spinbox; on|off - для переключателей)
   @Output() valueChange = new EventEmitter<number>(); 
@@ -43,8 +45,13 @@ export class ParamControlComponent implements OnInit {
    ) { }
 
   ngOnInit(): void {
-    this.isSwapper = typeof this.params.value === 'string' ? true : false;
-    this.iconPath = `assets/images/${this.params.value + (this.params.active ? '-active' : '')}.png`
+    // фиксируем переданный тип за нужными переменными
+    if ('image' in this.paramInput) {
+      this.paramBool = this.paramInput as ParamControl.TypeBool;
+      this.iconPath = `assets/images/${this.paramBool.image + (this.paramBool.active ? '-active' : '')}.png`
+    } else {
+      this.paramNumber = this.paramInput as ParamControl.TypeNumber;
+    }
 
     this.convertValueToStr();
     this.subscribeAuth();
@@ -65,26 +72,28 @@ export class ParamControlComponent implements OnInit {
   }
 
   convertValueToStr() {
-    if (this.isSwapper) return;
+    if (!this.paramNumber) return;
 
     // немного сделали костыль для нормального отображения целих значений 
-    let valueStr = this.params.value.toString();
-    this.value = (this.params.value as number) % 1 === 0 ? valueStr + '.0' : valueStr;
+    let valueStr = this.paramNumber.value.toString();
+    this.value = (this.paramNumber.value as number) % 1 === 0 ? valueStr + '.0' : valueStr;
   }
 
 
   onBtnDown(side: number) {
+    if (!this.paramNumber) return;
+
     let command: number | null = null;
-    if (this.params.text === "Фокус" && side > 0) {
+    if (this.paramNumber.text === "Фокус" && side > 0) {
       command = this.ptzCommand.zoomMinus;
     }
-    if (this.params.text === "Фокус" && side < 0) {
+    if (this.paramNumber.text === "Фокус" && side < 0) {
       command = this.ptzCommand.focusPlus;
     }
-    if (this.params.text === "Масштаб" && side > 0) {
+    if (this.paramNumber.text === "Масштаб" && side > 0) {
       command = this.ptzCommand.zoomMinus;
     }
-    if (this.params.text === "Масштаб" && side < 0) {
+    if (this.paramNumber.text === "Масштаб" && side < 0) {
       command = this.ptzCommand.zoomPlus;
     }
 
@@ -112,20 +121,24 @@ export class ParamControlComponent implements OnInit {
 
 
   clickSpinbox(side: number) {
-    this.params.value = parseFloat(((this.params.value as number) + (side) * STEP_VALUE).toFixed(1));
-    this.convertValueToStr();
-    this.valueChange.emit(this.params.value);   // отправка обновленных данных
+    if (!this.paramNumber) return;
 
-    console.log("вызов PTZ", this.params.text, side);
+    this.paramNumber.value = parseFloat((this.paramNumber.value + (side) * STEP_VALUE).toFixed(1));
+    this.convertValueToStr();
+    this.valueChange.emit(this.paramNumber.value);   // отправка обновленных данных
+
+    console.log("вызов PTZ", this.paramNumber.text, side);
 
     if (!this.isLogged) return;
   }
 
   
   clickSwaper() {
-    this.params.active = !this.params.active;
-    this.iconPath = `assets/images/${this.params.value + (this.params.active ? '-active' : '')}.png`;
-    this.activeChange.emit(this.params.active); // отправка обновленных данных
+    if (!this.paramBool) return;
+
+    this.paramBool.active = !this.paramBool.active;
+    this.iconPath = `assets/images/${this.paramBool.image + (this.paramBool.active ? '-active' : '')}.png`;
+    this.activeChange.emit(this.paramBool.active); // отправка обновленных данных
   }
 
 }

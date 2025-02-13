@@ -1,7 +1,10 @@
 <div class="param-control-component">
-    <div class="btn-spinbox-block" [class.focus]="params.focus" *ngIf="!isSwapper">
+    <div 
+        class="btn-spinbox-block"
+        *ngIf="paramNumber"
+    >
         <!-- <div class="spinbox-info">{{params.text}}: {{value}}</div> -->
-        <div class="spinbox-info">{{params.text}}</div>
+        <div class="spinbox-info">{{paramNumber.text}}</div>
         
         <div class="spinbox-btns">
             <div 
@@ -27,7 +30,12 @@
     </div>
 
 
-    <div class="btn-swapper" [class.btn-active]="params.active" [class.focus]="params.focus" *ngIf="isSwapper" (click)="clickSwaper()">
-        <img src={{iconPath}} alt={{params.value}}>  
+    <div
+        class="btn-swapper"
+        *ngIf="paramBool"
+        [class.btn-active]="paramBool.active" 
+        (click)="clickSwaper()"
+    >
+        <img src={{iconPath}} alt={{paramBool.image}}>  
     </div>
 </div>

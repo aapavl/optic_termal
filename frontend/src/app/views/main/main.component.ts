@@ -30,8 +30,18 @@ export class MainComponent implements OnInit {
 
 
   // начальное состояние настроек (надо будут учесть текушее состояние зума ...)
-  opticParam: ParamControl.Type[] = ParamControl.OpticParam;
-  termalParam: ParamControl.Type[] = ParamControl.TermalParam;
+  params = {
+    optic: {
+      numbers: ParamControl.OpticParamNumbers,
+      images: ParamControl.OpticParamImages
+    },
+    termal: {
+      numbers: ParamControl.TermalParamNumbers,
+      images: ParamControl.TermalParamImages
+    }
+  }
+  // opticParam: ParamControl.Type[] = ParamControl.OpticParam;
+  // termalParam: ParamControl.Type[] = ParamControl.TermalParam;
   distance: number = 1500; 
   angles: AnglesType = {   // значения получаемы из др компонентов
       horizontal: 0,
@@ -112,20 +122,33 @@ export class MainComponent implements OnInit {
   onParamValueChange(value: number, name: string, id: number) {
     console.log("Крутанули параметры ", name, value);
 
-    if (name === this.streamNames.optic) {
-      this.opticParam[id].value = value;
-      console.log(name, this.opticParam[id].value );
+    switch (name) {
+      case this.streamNames.optic: {
+        this.params.optic.numbers[id].value = value;
+        console.log(name, this.params.optic.numbers[id].value );
+        break;
+      }
+      case this.streamNames.termal: {
+        this.params.termal.numbers[id].value = value;
+        console.log(name, this.params.termal.numbers[id].value );
+        break;
+      }
     }
+    // if (name === this.streamNames.optic) {
+    //   this.params.optic.numbers[id].value = value;
+    //   console.log(name, this.params.optic.numbers[id].value );
+    // }
 
-    if (name === this.streamNames.termal) {
-      this.termalParam[id].value = value;
-      console.log(name, this.termalParam[id].value );
-    }
+    // if (name === this.streamNames.termal) {
+    //   this.params.termal.numbers[id].value = value;
+    //   console.log(name, this.params.termal.numbers[id].value );
+    // }
   }
 
-  onParamNNChange(active: boolean, name: string) {
+  onParamBoolChange(active: boolean, name: string, id: number) {
     console.log("Переключили режим ", name, active);
     
+    // *** надо учитывать id (что это точно нейронка)
     switch (name) {
       case this.streamNames.optic: {
         console.log("Глаз бога (NN): ", name, active);

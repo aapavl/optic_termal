@@ -21,7 +21,12 @@ export class FilesComponent implements OnInit {
   imgSrc: string | null = null
   isImage: boolean = false;
 
-  nnParam: ParamControl.Type = ParamControl.NnParam;
+  paramNN: ParamControl.TypeBool = {
+      text: "NN",
+      image: "eye-god",
+      active: false,
+      focus: false
+  };
   
   // private params = Config.api.requests.params;
 
@@ -40,16 +45,16 @@ export class FilesComponent implements OnInit {
         // *** сделать для всех типов
         this.imgSrc = BASE_URL + PARAMS.type.optic +  
                       PARAMS.file + this.fileName + 
-                      PARAMS.detect[this.nnParam.active ? 'true' : 'false']; 
+                      PARAMS.detect[this.paramNN.active ? 'true' : 'false']; 
     }
   }
 
 
   // обновляем фото на пропущеное через nn
   onNN(): void {
-    console.log(this.nnParam.active); 
+    console.log(this.paramNN.active); 
     this.imgSrc = BASE_URL + PARAMS.type.optic +  
                   PARAMS.file + this.fileName + 
-                  PARAMS.detect[this.nnParam.active ? 'true' : 'false'];
+                  PARAMS.detect[this.paramNN.active ? 'true' : 'false'];
   }
 }
