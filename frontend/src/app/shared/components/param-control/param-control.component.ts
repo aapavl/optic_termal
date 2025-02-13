@@ -1,12 +1,10 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ParamControl } from 'src/types/param-control.namespace';
-
+import { IronService } from '../../services/iron.service';
 import Config from '../../../../../../config.json';
-import { AuthService } from '../../services/auth.service';
-import { ApiService } from '../../services/api.service';
-import { Subscription } from 'rxjs';
 
 
+const PTZ_COMMAND = Config.lib.requests.ptz.params.command;
 
 
 @Component({
@@ -14,7 +12,7 @@ import { Subscription } from 'rxjs';
   templateUrl: './param-control.component.html',
   styleUrls: ['./param-control.component.scss']
 })
-export class ParamControlComponent implements OnInit {
+export class ParamControlComponent {
 
   // тело параметра
   @Input() paramInput!: ParamControl.TypeBool | ParamControl.TypeNumber;
@@ -24,23 +22,12 @@ export class ParamControlComponent implements OnInit {
   // путь для иконок 
   iconPath: string = '';  
 
-  // доступен ли тепляк
-  private isLogged: boolean = false;
-  private userId: number = -1;
-  private ptzCommand = Config.lib.requests.ptz.params.command;
-
-  // подписочка
-  private subscriptions: Subscription = new Subscription();
-
-
   
   // ------------------------------------------------------------------
-  // --- ЗАГРУЗКА -----------------------------------------------------
   // ------------------------------------------------------------------
 
   constructor(
-    private authService: AuthService,
-    private apiService: ApiService,
+    private ironService: IronService,
    ) { }
 
   ngOnInit(): void {
@@ -51,37 +38,6 @@ export class ParamControlComponent implements OnInit {
     } else {
       this.paramNumber = this.paramInput as ParamControl.TypeNumber;
     }
-
-    this.subscribeAuth();
-  }
-
-
-
-  // ------------------------------------------------------------------
-  // --- ПОДПИСОЧКИ ---------------------------------------------------
-  // ------------------------------------------------------------------
-
-  ngOnDestroy() {
-    this.subscriptions.unsubscribe();
-  }
-
-  subscribeAuth() {
-    const auth = this.authService.isLogged$.subscribe((data: boolean) => {
-      this.isLogged = data;
-      this.userId = this.authService.getUserId();
-    });
-    this.subscriptions.add(auth);
-  }
-
-  subscribePtzParams(command: number) {
-    console.log("(PTZ): ", this.paramInput.text, command, this.isLogged); // для теста
-    if (!this.isLogged) return;
-
-    const ptz = this.apiService.ptz(this.userId, 0, command)
-      .subscribe(response => {
-        console.log('PTZ response:', response);
-    });
-    this.subscriptions.add(ptz);
   }
 
 
@@ -95,18 +51,18 @@ export class ParamControlComponent implements OnInit {
 
     let command: number | null = null;
     if (this.paramNumber.text === "Фокус") {
-      command = side < 0 ? this.ptzCommand.focusMinus : this.ptzCommand.focusPlus
+      command = side < 0 ? PTZ_COMMAND.focusMinus : PTZ_COMMAND.focusPlus
     }
     if (this.paramNumber.text === "Масштаб") {
-      command = side < 0 ? this.ptzCommand.zoomMinus : this.ptzCommand.zoomPlus
+      command = side < 0 ? PTZ_COMMAND.zoomMinus : PTZ_COMMAND.zoomPlus
     }
 
     if (!command) return;
-    this.subscribePtzParams(command);
+    this.ironService.ptzCommand(command, this.paramNumber.text);
   }
 
   onBtnUp() {
-    this.subscribePtzParams(this.ptzCommand.stop);
+    this.ironService.ptzCommand(PTZ_COMMAND.stop, "stop");
   }
 
   clickSwaper() {

@@ -52,25 +52,8 @@
             <move-block-component [angles]="angles" (anglesChange)="onAnglesChange($event)"></move-block-component>
 
             <div class="btn-main" (click)="wiper()">Махнуть дворником</div>
-            <!-- 
-            <div class="block-inputs">
-                <div class="input">
-                    <span>right</span>
-                    <input type="text" id="right" value="0">
-                </div>
-        
-                <div class="input">
-                    <span>left</span>
-                    <input type="text" id="left" value="0">
-                </div>
-            </div>
 
-            <div class="block-btns">
-                <div class="btn-second" (click)="mapRoute()">+</div>
-                <div class="btn-second" (click)="mapRoute()">Запустить</div>
-            </div> -->
             <move-routing-component [isLogged]="isLogged" [userId]="userId"></move-routing-component>
-
         </div>
 
     </aside>

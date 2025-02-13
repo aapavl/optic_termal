@@ -1,13 +1,12 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { BehaviorSubject, catchError, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { ApiService } from './api.service';
 import { ResponseTypes } from 'src/types/response-api.namespace';
-import Config from '../../../../../config.json';//  assert { type: "json" }; 
-
-// const Config = require('../../../../config.json');
+import Config from '../../../../../config.json';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { HttpErrorResponse } from '@angular/common/http';
 
+
+const REQUESTS  = Config.lib.requests ;
 
 
 @Injectable({
@@ -15,13 +14,14 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 export class AuthService implements OnDestroy {
 
-  private requests = Config.lib.requests;
-  
   private userId: number = -1;
 
   private isLogged = new BehaviorSubject<boolean>(false);        // текущщее состояние
   isLogged$: Observable<boolean> = this.isLogged.asObservable(); // оповещение для слушателей
 
+
+  // ------------------------------------------------------------------
+  // ------------------------------------------------------------------
 
   constructor(
     private apiService: ApiService,
@@ -35,18 +35,23 @@ export class AuthService implements OnDestroy {
     this.onCleanup();
   }
 
+
+
+  // ------------------------------------------------------------------
+  // --- PUBLIC -------------------------------------------------------
+  // ------------------------------------------------------------------
+
   getUserId() {
     return this.userId;
   }
 
-
   onLogin() {
     console.log('Запрос на тепляк');
     
-    this.apiService.initialize(this.requests.init.params.protocolType)
+    this.apiService.initialize(REQUESTS.init.params.protocolType)
     .subscribe({
       next: (response: ResponseTypes.Default) => {
-        console.log('.Init:', response);
+        console.log('Init response:', response);
         if (response.error) {
           this._snackBar.open("Потеряна связь умным устройством...");
           throw new Error(response.message);
@@ -56,11 +61,24 @@ export class AuthService implements OnDestroy {
     });
   }
 
+  onCleanup() {
+    this.apiService.cleanup(REQUESTS.cleanup.params.protocolType)
+    .subscribe((response: ResponseTypes.Default) => {
+        console.log('Cleanup response:', response);
+        this.loggedChange(-1);
+    });
+  }
+
+
+
+  // ------------------------------------------------------------------
+  // --- PRIVATE -----------------------------------------------------
+  // ------------------------------------------------------------------
 
   private login() {
     this.apiService.login().subscribe({
       next: (response: ResponseTypes.Default | ResponseTypes.Login) => {
-        console.log('.Login:', response);
+        console.log('Login response:', response);
         let error: string | null = null;
         if ((response as ResponseTypes.Default).error) error = response.message;
   
@@ -73,14 +91,6 @@ export class AuthService implements OnDestroy {
         }
         this.loggedChange(loginValue.userId);
       }
-    });
-  }
-
-
-  onCleanup() {
-    this.apiService.cleanup(this.requests.cleanup.params.protocolType).subscribe((response: ResponseTypes.Default) => {
-        console.log('.Cleanup:', response);
-        this.loggedChange(-1);
     });
   }
 

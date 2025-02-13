@@ -26,7 +26,6 @@ export class MainComponent implements OnInit {
 
   // доступен ли тепляк
   private isLogged: boolean = false;
-  private userId: number = -1;
 
 
   // параметры тепляка ( *** надо будут учесть не начальное положение...)
@@ -78,9 +77,8 @@ export class MainComponent implements OnInit {
 
   subscribeAuth() {
     const auth = this.authService.isLogged$.subscribe((data: boolean) => {
-      console.log('Change logged: ', data);
+      console.log('Change logged: ', data); 
       this.isLogged = data;
-      this.userId = this.authService.getUserId();
       
       this.imgTermal = BASE_URL + PARAMS.type.termal + PARAMS.login[this.isLogged ? 'true' : 'false'];
       this.imgOptic = BASE_URL + PARAMS.type.optic + PARAMS.login[this.isLogged ? 'true' : 'false'];

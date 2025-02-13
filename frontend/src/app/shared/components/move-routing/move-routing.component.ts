@@ -1,9 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import Config from '../../../../../../config.json';
-import { ApiService } from '../../services/api.service';
-import { Subscription } from 'rxjs';
 import { PresetType } from 'src/types/preset.type';
+import { IronService } from '../../services/iron.service';
 
+
+const PTZ_COMMAND = Config.lib.requests.ptz.params.command;
 
 
 @Component({
@@ -21,22 +22,18 @@ export class MoveRoutingComponent implements OnInit {
   // Массив для хранения состояний каждого компонента
   routes: PresetType[] = [];
 
-  private ptzCommand = Config.lib.requests.ptz.params.command;
-
-  private subscriptions: Subscription = new Subscription();
-
+  
+  // ------------------------------------------------------------------
+  // ------------------------------------------------------------------
+  
   constructor(
-    private apiService: ApiService,
+    private ironService: IronService,
   ) { }
 
   ngOnInit(): void {
     this.addRoute();
   }
 
-  ngOnDestroy() {
-    // Unsubscribe from all subscriptions to prevent memory leaks
-    this.subscriptions.unsubscribe();
-  }
 
   addRoute() {
     this.routes.push({
@@ -90,29 +87,27 @@ export class MoveRoutingComponent implements OnInit {
 
       switch (item.name) {
         case "right":
-          curCommand = this.ptzCommand.right;
+          curCommand = PTZ_COMMAND.right;
           break;
         case "left":
-          curCommand = this.ptzCommand.left;
+          curCommand = PTZ_COMMAND.left;
           break;
         case "up":
-          curCommand = this.ptzCommand.up;
+          curCommand = PTZ_COMMAND.up;
           break;
         case "down":
-          curCommand = this.ptzCommand.down;
+          curCommand = PTZ_COMMAND.down;
           break;
       };
       
-
       if (curCommand) {
-        this.subscribePtzParams(curCommand);
+        this.ironService.ptzCommand(curCommand, item.name);
         await this.delay(item.value);
-        this.subscribePtzParams(this.ptzCommand.stop);
+        this.ironService.ptzCommand(PTZ_COMMAND.stop, "stop");
         console.log(` ${item.name}.`);
       } 
       else {
-        await this.delay(item.value);
-        console.log(`Команда ${item.name} не сработала.`);
+        console.log(`ERROR: команда ${item.name} не сработала.`);
       }
     }
     console.log("Сценарий завершен.");
@@ -121,16 +116,4 @@ export class MoveRoutingComponent implements OnInit {
   private delay(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms * 1000));
   }
-
-  subscribePtzParams(command: number) {
-    // console.log("Тут должа шо-то делать камера (PTZ): ", command, this.isLogged);
-    if (!this.isLogged) return;
-
-    const tmp = this.apiService.ptz(this.userId, 0, command)
-      .subscribe(response => {
-        console.log('PTZ:', response);
-    });
-    this.subscriptions.add(tmp);
-  }
-
 }
