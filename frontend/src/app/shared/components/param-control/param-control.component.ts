@@ -1,14 +1,11 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ParamControl } from 'src/types/param-control.namespace';
 
-import Config from '../../../../../../config.json';//  assert { type: "json" };
+import Config from '../../../../../../config.json';
 import { AuthService } from '../../services/auth.service';
 import { ApiService } from '../../services/api.service';
 import { Subscription } from 'rxjs';
 
-// const Config = require('../../../../../config.json');
-
-const STEP_VALUE: number = 0.1;  // величина шага ( может быть разной для всех устройств и параметров)
 
 
 
@@ -19,25 +16,27 @@ const STEP_VALUE: number = 0.1;  // величина шага ( может бы�
 })
 export class ParamControlComponent implements OnInit {
 
+  // тело параметра
   @Input() paramInput!: ParamControl.TypeBool | ParamControl.TypeNumber;
   paramBool: ParamControl.TypeBool | null = null;  
   paramNumber: ParamControl.TypeNumber | null = null; 
+  
+  // путь для иконок 
+  iconPath: string = '';  
 
-  // уведомления main.component об изменениях (значения - для spinbox; on|off - для переключателей)
-  @Output() valueChange = new EventEmitter<number>(); 
-  @Output() activeChange = new EventEmitter<boolean>();
-
-  iconPath: string = '';      // путь для иконок 
-  isSwapper: boolean = false; // флаг что пришел переключатель 
-
-  value: string = "";         // переменная для отображения значения в элементе
-
+  // доступен ли тепляк
   private isLogged: boolean = false;
   private userId: number = -1;
+  private ptzCommand = Config.lib.requests.ptz.params.command;
 
+  // подписочка
   private subscriptions: Subscription = new Subscription();
 
-  private ptzCommand = Config.lib.requests.ptz.params.command;
+
+  
+  // ------------------------------------------------------------------
+  // --- ЗАГРУЗКА -----------------------------------------------------
+  // ------------------------------------------------------------------
 
   constructor(
     private authService: AuthService,
@@ -53,13 +52,16 @@ export class ParamControlComponent implements OnInit {
       this.paramNumber = this.paramInput as ParamControl.TypeNumber;
     }
 
-    this.convertValueToStr();
     this.subscribeAuth();
   }
 
 
+
+  // ------------------------------------------------------------------
+  // --- ПОДПИСОЧКИ ---------------------------------------------------
+  // ------------------------------------------------------------------
+
   ngOnDestroy() {
-    // Unsubscribe from all subscriptions to prevent memory leaks
     this.subscriptions.unsubscribe();
   }
 
@@ -71,74 +73,47 @@ export class ParamControlComponent implements OnInit {
     this.subscriptions.add(auth);
   }
 
-  convertValueToStr() {
-    if (!this.paramNumber) return;
+  subscribePtzParams(command: number) {
+    console.log("(PTZ): ", this.paramInput.text, command, this.isLogged); // для теста
+    if (!this.isLogged) return;
 
-    // немного сделали костыль для нормального отображения целих значений 
-    let valueStr = this.paramNumber.value.toString();
-    this.value = (this.paramNumber.value as number) % 1 === 0 ? valueStr + '.0' : valueStr;
+    const ptz = this.apiService.ptz(this.userId, 0, command)
+      .subscribe(response => {
+        console.log('PTZ response:', response);
+    });
+    this.subscriptions.add(ptz);
   }
 
+
+
+  // ------------------------------------------------------------------
+  // --- СОБЫТИЯ ------------------------------------------------------
+  // ------------------------------------------------------------------
 
   onBtnDown(side: number) {
     if (!this.paramNumber) return;
 
     let command: number | null = null;
-    if (this.paramNumber.text === "Фокус" && side > 0) {
-      command = this.ptzCommand.zoomMinus;
+    if (this.paramNumber.text === "Фокус") {
+      command = side < 0 ? this.ptzCommand.focusMinus : this.ptzCommand.focusPlus
     }
-    if (this.paramNumber.text === "Фокус" && side < 0) {
-      command = this.ptzCommand.focusPlus;
-    }
-    if (this.paramNumber.text === "Масштаб" && side > 0) {
-      command = this.ptzCommand.zoomMinus;
-    }
-    if (this.paramNumber.text === "Масштаб" && side < 0) {
-      command = this.ptzCommand.zoomPlus;
+    if (this.paramNumber.text === "Масштаб") {
+      command = side < 0 ? this.ptzCommand.zoomMinus : this.ptzCommand.zoomPlus
     }
 
     if (!command) return;
-    // this.commandActive = true;
     this.subscribePtzParams(command);
   }
 
   onBtnUp() {
-    // this.commandActive = false;
     this.subscribePtzParams(this.ptzCommand.stop);
   }
 
-  subscribePtzParams(command: number) {
-    console.log("Тут должа шо-то делать камера (PTZ): ", command, this.isLogged);
-    if (!this.isLogged) return;
-
-    const tmp = this.apiService.ptz(this.userId, 0, command)
-      .subscribe(response => {
-        console.log('PTZ:', response);
-    });
-    this.subscriptions.add(tmp);
-  }
-
-
-
-  clickSpinbox(side: number) {
-    if (!this.paramNumber) return;
-
-    this.paramNumber.value = parseFloat((this.paramNumber.value + (side) * STEP_VALUE).toFixed(1));
-    this.convertValueToStr();
-    this.valueChange.emit(this.paramNumber.value);   // отправка обновленных данных
-
-    console.log("вызов PTZ", this.paramNumber.text, side);
-
-    if (!this.isLogged) return;
-  }
-
-  
   clickSwaper() {
     if (!this.paramBool) return;
 
     this.paramBool.active = !this.paramBool.active;
     this.iconPath = `assets/images/${this.paramBool.image + (this.paramBool.active ? '-active' : '')}.png`;
-    this.activeChange.emit(this.paramBool.active); // отправка обновленных данных
   }
 
 }

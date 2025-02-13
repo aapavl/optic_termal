@@ -1,33 +1,33 @@
 <div class="move-block-component">
     <div class="control-btns">
         <div class="btns-row">
-            <div class="btn-move" (click)="clickMoveY(1); clickMoveX(-1)"></div> 
+            <div class="btn-move"></div> 
             <div 
                 class="btn-move" #up  [innerHTML]="icon_arrow_up"
-                (click)="clickMoveY(1)"  (mousedown)="onBtnDown(ptzCommand.up)" (mouseup)="onBtnUp()"
+                (mousedown)="onBtnDown(ptzCommand.up)" (mouseup)="onBtnUp()"
             ></div> 
-            <div class="btn-move" (click)="clickMoveY(1); clickMoveX(1)"></div>   
+            <div class="btn-move"></div>   
         </div>
         
         <div class="btns-row">        
             <div 
                 class="btn-move" #left [innerHTML]="icon_arrow_left"
-                (click)="clickMoveX(-1)"  (mousedown)="onBtnDown(ptzCommand.left)" (mouseup)="onBtnUp()"
+                (mousedown)="onBtnDown(ptzCommand.left)" (mouseup)="onBtnUp()"
             ></div> 
-            <div class="btn-move" #center (click)="clickMoveCenter()" [innerHTML]="icon_arrow_center"></div> 
+            <div class="btn-move" #center [innerHTML]="icon_arrow_center"></div> 
             <div 
                 class="btn-move" #right [innerHTML]="icon_arrow_right"
-                (click)="clickMoveX(1)" (mousedown)="onBtnDown(ptzCommand.right)" (mouseup)="onBtnUp()"
+                (mousedown)="onBtnDown(ptzCommand.right)" (mouseup)="onBtnUp()"
             ></div>   
         </div>
         
         <div class="btns-row">
-            <div class="btn-move" (click)="clickMoveY(-1); clickMoveX(-1)"></div> 
+            <div class="btn-move"></div> 
             <div 
                 class="btn-move" #down [innerHTML]="icon_arrow_down"
-                (click)="clickMoveY(-1)"  (mousedown)="onBtnDown(ptzCommand.down)" (mouseup)="onBtnUp()"
+                (mousedown)="onBtnDown(ptzCommand.down)" (mouseup)="onBtnUp()"
             ></div> 
-            <div class="btn-move" (click)="clickMoveY(-1); clickMoveX(1)"></div>   
+            <div class="btn-move"></div>   
         </div>
     </div>
 </div>

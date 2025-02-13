@@ -5,25 +5,16 @@
       <div class="param-group">
         <div class="param-path">
           <param-control-component
-            class="focusElement" tabindex="0" 
             *ngFor="let param of params.optic.numbers; let i = index"
             [paramInput]="params.optic.numbers[i]" 
-            (valueChange)="onParamValueChange($event, streamNames.optic, i)"
           >
           </param-control-component>
         </div>
         <div class="param-path">
           <param-control-component
-            class="focusElement" tabindex="0" 
             *ngFor="let param of params.optic.images; let i = index"
-            [paramInput]="params.optic.images[i]" 
-            (activeChange)="onParamBoolChange($event, streamNames.optic, i)"
+            [paramInput]="param" 
           >
-          <!-- <param-control-component 
-            class="focusElement" tabindex="0" 
-            [params]="opticParam[3]"
-            (activeChange)="onParamNNChange($event, streamNames.optic)"
-          >-->
           </param-control-component> 
         </div>
       </div>
@@ -35,35 +26,20 @@
       <div class="param-group">
         <div class="param-path">
           <param-control-component
-            class="focusElement" tabindex="0" 
             *ngFor="let param of params.termal.numbers; let i = index"
-            [paramInput]="params.termal.numbers[i]" 
-            (valueChange)="onParamValueChange($event, streamNames.termal, i)"
+            [paramInput]="param" 
           >
           </param-control-component>
         </div>
         <div class="param-path">
-          <!-- <param-control-component 
-            class="focusElement" tabindex="0" 
-            [params]="termalParam[2]"
-            (activeChange)="false"
-          >
-          </param-control-component>
-          <param-control-component 
-            class="focusElement" tabindex="0" 
-            [params]="termalParam[3]"
-            (activeChange)="onParamBoolChange($event, streamNames.termal)"
-          > -->
           <param-control-component
-            class="focusElement" tabindex="0" 
             *ngFor="let param of params.termal.images; let i = index"
-            [paramInput]="params.termal.images[i]" 
-            (activeChange)="onParamBoolChange($event, streamNames.termal, i)"
+            [paramInput]="param" 
           >
           </param-control-component>
         </div> 
       </div>
-      <img class="stream-img" [src]="imgTermal" alt="Stream termal">
+      <img *ngIf="imgTermal" class="stream-img" [src]="imgTermal" alt="Stream termal">
     </div>
 
 </div>
