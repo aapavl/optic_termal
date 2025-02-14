@@ -6,6 +6,7 @@ import Config from '../../../../../config.json';
 
 
 const WIPER_COMMAND = Config.lib.requests.wiper.params.command;
+const STOP = Config.lib.requests.ptz.params.command.stop;
 
 
 @Injectable({
@@ -17,6 +18,11 @@ export class IronService {
   private isLogged: boolean = false;
   private userId: number = -1;
   private subscriptionAuth: Subscription = new Subscription();
+
+  // флаг прерывания таймера
+  private controller: AbortController = new AbortController(); 
+  // Идентификатор таймера
+  private timeoutId: NodeJS.Timeout | undefined = undefined;
   
 
   // ------------------------------------------------------------------
@@ -37,13 +43,44 @@ export class IronService {
 
   subscribeAuth() {
     this.subscriptionAuth = this.authService.isLogged$.subscribe((data: boolean) => {
+
+      // отменяем все действия при логауте пользователя
+      if (this.isLogged && data === false) {
+        this.deleteDelay();
+        this.ptzCommand(STOP, "stop");
+      }
+
       this.isLogged = data;
       this.userId = this.authService.getUserId();
     });
   }
 
   delay(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms * 1000));
+    return new Promise((resolve, reject) => {
+      // Очищаем предыдущий таймер, если он существует
+      if (this.timeoutId) {
+        clearTimeout(this.timeoutId);
+      }
+
+      // Устанавливаем новый таймер
+      this.timeoutId = setTimeout(() => {
+        resolve();      // Завершаем промис успешно
+        this.timeoutId = undefined  // Очищаем ресурсы
+      }, ms * 1000);
+
+      this.controller.signal.addEventListener('abort', () => {
+        clearTimeout(this.timeoutId);            // Очищаем таймер
+        // reject(new Error('Таймер был прерван')); // Отклоняем промис
+        console.log("Таймер был прерван");
+        this.timeoutId = undefined ; // Очищаем ресурсы
+      });
+    });
+  }
+
+  
+  deleteDelay() {
+    this.controller.abort(); // прерываем текущий таймер
+    this.controller = new AbortController(); // новый AbortController для будущих таймер
   }
 
   
