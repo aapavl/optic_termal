@@ -10,20 +10,32 @@ import { PresetType } from 'src/types/preset.type';
 })
 export class InputMapComponent implements OnInit {
 
-  // inputValue: number = 0;
   @Input() route!: PresetType; 
   @Output() valueChange = new EventEmitter<PresetType>();
   @Output() clickDelete = new EventEmitter<number>();
+
+
+
+  // ------------------------------------------------------------------
+  // ------------------------------------------------------------------
 
   constructor() { }
 
   ngOnInit(): void {
   }
 
+
+
+  // ------------------------------------------------------------------
+  // --- СОБЫТИЯ ------------------------------------------------------
+  // ------------------------------------------------------------------
+
+  // отправляем новое значение в родительский компонент
   onValueChange() {
-    this.valueChange.emit({ id: this.route.id, name: this.route.name, value: this.route.value });  // Отправляем новое значение в родительский компонент
+    this.valueChange.emit({ id: this.route.id, name: this.route.name, value: this.route.value }); 
   }
 
+  // удаление элемента
   clickTrash() {
     this.clickDelete.emit(this.route.id); 
   }

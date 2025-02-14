@@ -49,11 +49,12 @@
         </div> -->
 
         <div class="block-control">
-            <move-block-component [angles]="angles" (anglesChange)="onAnglesChange($event)"></move-block-component>
+            <!-- <move-block-component [angles]="angles" (anglesChange)="onAnglesChange($event)"></move-block-component> -->
+            <move-block-component></move-block-component>
 
             <div class="btn-main" (click)="wiper()">Махнуть дворником</div>
+            <move-routing-component></move-routing-component>
 
-            <move-routing-component [isLogged]="isLogged" [userId]="userId"></move-routing-component>
         </div>
 
     </aside>

@@ -21,6 +21,7 @@ export class LayoutComponent implements OnInit {
   // auth
   userId: number = -1;
   isLogged: boolean = false;
+  private subscriptions: Subscription = new Subscription();
 
   distance: number = 1500; 
   angles: AnglesType = {   // *** значения получаемы из др компонентов
@@ -28,7 +29,6 @@ export class LayoutComponent implements OnInit {
     vertical: 0
   } 
   
-  private subscriptions: Subscription = new Subscription();
 
   
   // ------------------------------------------------------------------
@@ -55,7 +55,6 @@ export class LayoutComponent implements OnInit {
 
   subscribeAuth() {
     const auth = this.authService.isLogged$.subscribe((data: boolean) => {
-      console.log('Change logged: ', data);
       this.isLogged = data;
       this.userId = this.authService.getUserId();
     });

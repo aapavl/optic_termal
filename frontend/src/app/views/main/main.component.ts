@@ -1,12 +1,8 @@
-import { Component, ElementRef, OnInit, QueryList, ViewChildren, Output, ChangeDetectorRef } from '@angular/core';
-import { ApiService } from '../../shared/services/api.service';
+import { Component, OnInit } from '@angular/core';
 import { ParamControl } from 'src/types/param-control.namespace';
-import { AnglesType } from 'src/types/angles.type';
-import { BehaviorSubject, Subscription } from 'rxjs';
-import { ParamControlComponent } from 'src/app/shared/components/param-control/param-control.component';
-
-import Config from '../../../../../config.json';// assert { type: "json" };
+import Config from '../../../../../config.json';
 import { AuthService } from 'src/app/shared/services/auth.service';
+import { Subscription } from 'rxjs';
 
 
 const BASE_URL = Config.api.ip + Config.api.port + Config.api.requests.url.stream;
@@ -47,13 +43,12 @@ export class MainComponent implements OnInit {
 
   // данные стиримов
   streamNames = Config.api.names;
-  imgTermal: string = BASE_URL + PARAMS.type.termal + PARAMS.login[this.isLogged ? 'true' : 'false'];
-  imgOptic: string =  BASE_URL + PARAMS.type.optic + PARAMS.login[this.isLogged ? 'true' : 'false']; // + this.stream.params.detect + this.opticParam[3].active;
+  imgTermal: string | null = null;
+  imgOptic: string | null = null;
 
   
   
   // ------------------------------------------------------------------
-  // --- ЗАГРУЗКА -----------------------------------------------------
   // ------------------------------------------------------------------
 
   constructor(
@@ -77,11 +72,11 @@ export class MainComponent implements OnInit {
 
   subscribeAuth() {
     const auth = this.authService.isLogged$.subscribe((data: boolean) => {
-      console.log('Change logged: ', data); 
       this.isLogged = data;
       
-      this.imgTermal = BASE_URL + PARAMS.type.termal + PARAMS.login[this.isLogged ? 'true' : 'false'];
-      this.imgOptic = BASE_URL + PARAMS.type.optic + PARAMS.login[this.isLogged ? 'true' : 'false'];
+      const isLoggedStr = this.isLogged ? 'true' : 'false';
+      this.imgTermal = BASE_URL + PARAMS.type.termal + PARAMS.login[isLoggedStr];
+      this.imgOptic = BASE_URL + PARAMS.type.optic + PARAMS.login[isLoggedStr];
     });
     this.subscriptions.add(auth);
   }

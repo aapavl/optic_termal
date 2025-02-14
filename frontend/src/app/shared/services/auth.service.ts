@@ -59,13 +59,15 @@ export class AuthService implements OnDestroy {
         this.login();
       },
     });
+
+    this.loggedStatus(this.userId);
   }
 
   onCleanup() {
     this.apiService.cleanup(REQUESTS.cleanup.params.protocolType)
     .subscribe((response: ResponseTypes.Default) => {
         console.log('Cleanup response:', response);
-        this.loggedChange(-1);
+        this.loggedStatus(-1);
     });
   }
 
@@ -89,14 +91,16 @@ export class AuthService implements OnDestroy {
           this._snackBar.open(error);
           throw new Error(error);
         }
-        this.loggedChange(loginValue.userId);
+        this.loggedStatus(loginValue.userId);
       }
     });
   }
 
-  private loggedChange(userId: number) {
+  private loggedStatus(userId: number) {
     this.userId = userId;
     this.isLogged.next(userId > 0 ? true : false); 
+    
+    console.log('Auth: ', this.isLogged.value);
   }
 
 }

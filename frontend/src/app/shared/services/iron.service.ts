@@ -16,9 +16,7 @@ export class IronService {
   // доступен ли тепляк
   private isLogged: boolean = false;
   private userId: number = -1;
-
-  // подписочка
-  private subscriptions: Subscription = new Subscription();
+  private subscriptionAuth: Subscription = new Subscription();
   
 
   // ------------------------------------------------------------------
@@ -34,15 +32,18 @@ export class IronService {
   }
  
   ngOnDestroy() {
-    this.subscriptions.unsubscribe();
+    this.subscriptionAuth.unsubscribe();
   }
 
   subscribeAuth() {
-    const auth = this.authService.isLogged$.subscribe((data: boolean) => {
+    this.subscriptionAuth = this.authService.isLogged$.subscribe((data: boolean) => {
       this.isLogged = data;
       this.userId = this.authService.getUserId();
     });
-    this.subscriptions.add(auth);
+  }
+
+  delay(ms: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms * 1000));
   }
 
   
@@ -56,11 +57,10 @@ export class IronService {
 
     if (!this.isLogged) return;
 
-    const tmp = this.apiService.ptz(this.userId, 0, command)
+    this.apiService.ptz(this.userId, 0, command)
       .subscribe(response => {
         console.log("PTZ response:", response);
     });
-    this.subscriptions.add(tmp);
   }
 
   wiperCommand() {

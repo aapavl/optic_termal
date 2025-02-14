@@ -4,7 +4,6 @@
         <input-map-component 
             *ngFor="let route of routes; let i = index" 
             [route]="route"
-            (valueChange)="onValueInput($event, i)"
             (clickDelete)="onClickDelete($event)"
         >
         </input-map-component>
@@ -14,6 +13,6 @@
         <div class="btn-main" (click)="addRoute()">+</div>
         <div class="btn-main" (click)="clickRoute()">Запустить</div>
     </div>
-    <div class="btn-main" (click)="loopRoute()">Зациклить</div>
+    <div class="btn-main" (click)="clickLoop()">Зациклить</div>
 
 </div>

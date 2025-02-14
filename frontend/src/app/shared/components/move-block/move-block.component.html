@@ -1,33 +1,65 @@
 <div class="move-block-component">
     <div class="control-btns">
         <div class="btns-row">
-            <div class="btn-move"></div> 
             <div 
-                class="btn-move" #up  [innerHTML]="icon_arrow_up"
+                class="btn-move"
+                (mousedown)="onBtnDown(ptzCommand.up, ptzCommand.left)" (mouseup)="onBtnUp()"
+            >
+            </div> 
+            <div 
+                class="btn-move"
                 (mousedown)="onBtnDown(ptzCommand.up)" (mouseup)="onBtnUp()"
-            ></div> 
-            <div class="btn-move"></div>   
+            >
+                <svg width="100px" height="100px" viewBox="0 0 100 100">
+                    <path d="M25.2813 48.5313C24.1411 49.7899 22.4094 50.3334 20.7546 49.9521C19.0997 49.5708 17.7805 48.3242 17.3062 46.6935C16.8319 45.0629 17.2766 43.3032 18.4688 42.0937L45.0313 13.9687C45.9167 13.0322 47.1487 12.5015 48.4375 12.5015C49.7263 12.5015 50.9583 13.0322 51.8438 13.9687L78.4063 42.0937C80.1184 43.9839 80.0052 46.8961 78.1516 48.6477C76.298 50.3993 73.3841 50.3476 71.5938 48.5312L53.125 28.975L53.125 82.8125C53.125 85.4013 51.0263 87.5 48.4375 87.5C45.8487 87.5 43.75 85.4013 43.75 82.8125L43.75 28.975L25.2813 48.5313L25.2813 48.5313Z" id="Shape" fill="#000000" stroke="none" clip-path="url(#clip_1)" />
+                </svg>
+            </div> 
+            <div 
+                class="btn-move"
+                (mousedown)="onBtnDown(ptzCommand.up, ptzCommand.right)" (mouseup)="onBtnUp()"
+            >
+            </div>  
         </div>
         
         <div class="btns-row">        
             <div 
-                class="btn-move" #left [innerHTML]="icon_arrow_left"
+                class="btn-move" 
                 (mousedown)="onBtnDown(ptzCommand.left)" (mouseup)="onBtnUp()"
-            ></div> 
-            <div class="btn-move" #center [innerHTML]="icon_arrow_center"></div> 
+            >
+                <svg width="100px" height="100px" viewBox="0 0 100 100">
+                    <path d="M48.5312 25.2813C49.7898 24.1412 50.3334 22.4095 49.952 20.7547C49.5707 19.0998 48.3241 17.7806 46.6935 17.3063C45.0628 16.832 43.3032 17.2767 42.0937 18.4688L13.9812 45.0188C13.0344 45.902 12.4963 47.1383 12.4951 48.4331C12.4939 49.7279 13.0298 50.9652 13.975 51.8501L42.0937 78.4126C43.977 80.1898 46.9445 80.1039 48.7218 78.2205C50.499 76.3372 50.4131 73.3697 48.5297 71.5925L28.975 53.1251L82.8125 53.1251C85.4013 53.1251 87.5 51.0264 87.5 48.4376C87.5 45.8487 85.4013 43.7501 82.8125 43.7501L28.975 43.7501L48.5312 25.2813L48.5312 25.2813Z" id="Path" fill="#000000" stroke="none" clip-path="url(#clip_1)" />
+                </svg>
+            </div> 
+            <div class="btn-move" aria-disabled="true"></div> 
             <div 
-                class="btn-move" #right [innerHTML]="icon_arrow_right"
+                class="btn-move" 
                 (mousedown)="onBtnDown(ptzCommand.right)" (mouseup)="onBtnUp()"
-            ></div>   
+            >
+                <svg width="100px" height="100px" viewBox="0 0 100 100">
+                    <path d="M51.4688 25.2814C50.2101 24.1413 49.6665 22.4096 50.0479 20.7547C50.4292 19.0998 51.6758 17.7806 53.3064 17.3063C54.9371 16.832 56.6968 17.2767 57.9063 18.4689L86.0313 45.0314C86.9678 45.9168 87.4985 47.1488 87.4985 48.4376C87.4985 49.7265 86.9678 50.9584 86.0313 51.8439L57.9063 78.4064C56.0161 80.1185 53.1039 80.0053 51.3523 78.1517C49.6007 76.2981 49.6524 73.3842 51.4688 71.5939L71.025 53.1251L17.1875 53.1251C14.5987 53.1251 12.5 51.0264 12.5 48.4376C12.5 45.8488 14.5987 43.7501 17.1875 43.7501L71.025 43.7501L51.4688 25.2814L51.4688 25.2814Z" id="Path" fill="#000000" stroke="none" clip-path="url(#clip_1)" />
+                </svg>
+            </div>   
         </div>
         
         <div class="btns-row">
-            <div class="btn-move"></div> 
             <div 
-                class="btn-move" #down [innerHTML]="icon_arrow_down"
+                class="btn-move"
+                (mousedown)="onBtnDown(ptzCommand.down, ptzCommand.left)" (mouseup)="onBtnUp()"
+            >
+            </div> 
+            <div 
+                class="btn-move" 
                 (mousedown)="onBtnDown(ptzCommand.down)" (mouseup)="onBtnUp()"
-            ></div> 
-            <div class="btn-move"></div>   
+            >
+                <svg width="100px" height="100px" viewBox="0 0 100 100">
+                    <path d="M53.125 17.1875C53.125 14.5987 51.0263 12.5 48.4375 12.5C45.8487 12.5 43.75 14.5987 43.75 17.1875L43.75 71.025L25.2813 51.4688C23.491 49.6524 20.5771 49.6007 18.7234 51.3523C16.8698 53.1039 16.7566 56.0161 18.4688 57.9063L45.0188 86.0188C45.0697 86.074 45.1218 86.1282 45.175 86.1812C46.0312 87.0093 47.1715 87.4789 48.3625 87.4937L48.4375 87.5L48.5125 87.5C49.7759 87.4814 50.9778 86.9514 51.8438 86.0313L78.4063 57.9063C80.1184 56.0161 80.0052 53.1039 78.1516 51.3523C76.298 49.6007 73.3841 49.6524 71.5938 51.4688L53.125 71.025L53.125 17.1875L53.125 17.1875Z" id="Path" fill="#000000" stroke="none" clip-path="url(#clip_1)" />
+                </svg>
+            </div> 
+            <div 
+                class="btn-move"
+                (mousedown)="onBtnDown(ptzCommand.down, ptzCommand.right)" (mouseup)="onBtnUp()"
+            >
+            </div>   
         </div>
     </div>
 </div>
