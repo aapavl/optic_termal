@@ -82,48 +82,6 @@ export class MoveRoutingComponent implements OnInit {
   }
 
 
-  // async clickLoop(): Promise<void>  {
-  //   // if (!this.isLogged) return; // запуск только если запросы пройдут
-
-  //   // выключаем другие сигналы
-  //   if (!this.isRouting && this.isActive) 
-  //     this.isActive = true;
-
-  //   // переключаемся на режим зацикливания
-  //   this.isRouting = true;
-  //   this.isActive = true;
-
-  //   while (this.isRouting) {
-  //     console.log("Зацикливание: ", this.isRouting);
-  //     await this.mapRoute(); // Дождаться завершения функции
-  //   }
-
-  //   // завершаем режим
-  //   this.ironService.ptzCommand(PTZ_COMMAND.stop, "stop");
-  //   this.isActive = false;
-  // }
-
-  // async clickRoute(): Promise<void>  {
-  //   // if (!this.isLogged) return; // запуск только если запросы пройдут
-
-  //   // выключаем другие сигналы
-  //   if (this.isRouting && this.isActive) 
-  //     this.isActive = true;
-
-  //   // переключаемся на режим одиночного прохода 
-  //   this.isRouting = true;
-  //   this.isActive = true;
-
-  //   if (this.isActive) {
-  //     console.log("Сценарий:", this.userId, this.isLogged);
-  //     await this.mapRoute(); // Дождаться завершения функции
-      
-  //     // завершаем режим
-  //     this.ironService.ptzCommand(PTZ_COMMAND.stop, "stop");
-  //     this.isActive = false;
-  //   }
-  // }
-
   async clickRun(newRoute: number) {
     // *** для теста
     // if (!this.isLogged) return; // запуск только если запросы пройдут
@@ -212,10 +170,6 @@ export class MoveRoutingComponent implements OnInit {
         console.log(`ERROR: неизвестная команда ${item.name}.`);
       }
     }
-
-    // this.ironService.deleteDelay();
-    // this.ironService.ptzCommand(PTZ_COMMAND.stop, "stop");
-    // // console.log("/ end /"); // для теста
   }
 
 
