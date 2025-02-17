@@ -19,8 +19,6 @@ export class IronService {
   private userId: number = -1;
   private subscriptionAuth: Subscription = new Subscription();
 
-  // флаг прерывания таймера
-  private controller: AbortController = new AbortController(); 
   // Идентификатор таймера
   private timeoutId: NodeJS.Timeout | undefined = undefined;
   
@@ -56,31 +54,25 @@ export class IronService {
   }
 
   delay(ms: number): Promise<void> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       // Очищаем предыдущий таймер, если он существует
       if (this.timeoutId) {
-        clearTimeout(this.timeoutId);
+        this.deleteDelay();
       }
 
-      // Устанавливаем новый таймер
+      // Обновляем текущий таймер
       this.timeoutId = setTimeout(() => {
         resolve();      // Завершаем промис успешно
         this.timeoutId = undefined  // Очищаем ресурсы
       }, ms * 1000);
-
-      this.controller.signal.addEventListener('abort', () => {
-        clearTimeout(this.timeoutId);            // Очищаем таймер
-        // reject(new Error('Таймер был прерван')); // Отклоняем промис
-        console.log("Таймер был прерван");
-        this.timeoutId = undefined ; // Очищаем ресурсы
-      });
     });
   }
 
   
   deleteDelay() {
-    this.controller.abort(); // прерываем текущий таймер
-    this.controller = new AbortController(); // новый AbortController для будущих таймер
+    clearTimeout(this.timeoutId); // Очищаем таймер
+    this.timeoutId = undefined    // Очищаем ресурсы
+    console.log("Таймер был сброшен");
   }
 
   

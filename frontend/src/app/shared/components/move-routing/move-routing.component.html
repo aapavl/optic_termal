@@ -11,8 +11,8 @@
 
     <div class="block-btns">
         <div class="btn-main" (click)="addRoute()">+</div>
-        <div [ngClass]="isLoopRouting && isLoopRouting === 1 ? 'btn-main' : 'btn-second'" (click)="clickRun(1)">Запустить</div>
+        <div [ngClass]="isRouting && isRouting === 1 ? 'btn-main' : 'btn-second'" (click)="clickRun(1)">Запустить</div>
     </div>
-    <div [ngClass]="isLoopRouting && isLoopRouting === 2 ? 'btn-main' : 'btn-second'" (click)="clickRun(2)">Зациклить</div>
+    <div [ngClass]="isRouting && isRouting === 2 ? 'btn-main' : 'btn-second'" (click)="clickRun(2)">Зациклить</div>
 
 </div>
